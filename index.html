@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>自考备考综合平台 | 13162+13129+15040+15043</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+            padding: 20px 16px 40px;
+        }
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .main-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 24px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(30,60,114,0.3);
+        }
+        .main-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        .main-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        /* Module Selection */
+        .module-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .module-btn {
+            padding: 16px 32px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #1e3a5f;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .module-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .module-btn.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            box-shadow: 0 8px 20px rgba(30,60,114,0.4);
+        }
+        
+        /* Content Area */
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 0.4fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) {
+            .content-area { grid-template-columns: 1fr; }
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e0eaf5;
+        }
+        
+        /* Translation Module */
+        .translation-module .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .translation-module .category-tab {
+            background: #f1f5f9;
+            border: none;
+            color: #475569;
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .translation-module .category-tab.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+        .chinese-sentence {
+            font-size: 1.3rem;
+            color: #1e293b;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            padding: 24px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            border-left: 4px solid #2563eb;
+        }
+        .translation-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .translation-input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        /* Quiz Module */
+        .quiz-module .subject-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .quiz-module .subject-tab {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f1f5f9;
+            color: #475569;
+            transition: all 0.3s;
+        }
+        .quiz-module .subject-tab.active {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+        .question-card {
+            background: #fafcff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        .question-type {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .options-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .option-item:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+        .option-item.correct {
+            background: #dcfce7;
+            border-color: #22c55e;
+        }
+        .option-item.wrong {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        .option-prefix {
+            font-weight: 700;
+            background: #f1f5f9;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #475569;
+        }
+        .short-answer-area {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .short-answer-text {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            line-height: 1.7;
+            color: #334155;
+        }
+        
+        /* Analysis Box */
+        .analysis-box {
+            background: #eff6ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        .analysis-title {
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        /* Buttons */
+        .btn {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37,99,235,0.4);
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .stats-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            color: #1e293b;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Wrong List */
+        .wrong-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .wrong-item {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 8px 0;
+            font-size: 0.9rem;
+            color: #7f1d1d;
+        }
+        
+        /* Exam Info */
+        .exam-info-bar {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .exam-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+        }
+        .countdown-box {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        
+        /* Hidden */
+        .hidden { display: none !important; }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .main-header h1 { font-size: 1.6rem; }
+            .module-btn { padding: 12px 20px; font-size: 0.95rem; }
+            .question-text { font-size: 1.1rem; }
+            .chinese-sentence { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="main-header">
+            <h1>📚 自考备考综合平台</h1>
+            <p>13162英语写作 | 13129英汉互译 | 15040新思想 | 15043近代史</p>
+            <div class="exam-info-bar">
+                <span class="exam-badge">📅 考试日期：4月11日</span>
+                <span class="exam-badge">⏰ 倒计时：<span id="countdown">--</span> 天</span>
+            </div>
+        </div>
+        
+        <!-- Module Selector -->
+        <div class="module-selector">
+            <button class="module-btn active" data-module="translation">📝 汉译英翻译</button>
+            <button class="module-btn" data-module="quiz15040">📖 15040 新思想</button>
+            <button class="module-btn" data-module="quiz15043">📜 15043 近代史</button>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Translation Module -->
+                <div class="translation-module card" id="translationModule">
+                    <div class="category-tabs" id="transCategoryTabs">
+                        <button class="category-tab active" data-category="all">全部考点</button>
+                        <button class="category-tab" data-category="sentence">句式结构</button>
+                        <button class="category-tab" data-category="tense">时态语态</button>
+                        <button class="category-tab" data-category="clause">从句翻译</button>
+                        <button class="category-tab" data-category="rhetoric">修辞表达</button>
+                        <button class="category-tab" data-category="idiom">习语成语</button>
+                        <button class="category-tab" data-category="culture">文化负载</button>
+                        <button class="category-tab" data-category="writing">写作句型</button>
+                    </div>
+                    
+                    <div class="sentence-header">
+                        <span class="question-type" id="transType">句式结构</span>
+                        <span class="exam-badge" style="background:#dbeafe;color:#1e40af;" id="transExam">13129考点</span>
+                    </div>
+                    
+                    <div class="chinese-sentence" id="chineseSentence">只有在经历了无数次失败之后，他才意识到成功并非一蹴而就。</div>
+                    
+                    <div class="analysis-box" id="transTip">
+                        <div class="analysis-title">💡 翻译策略</div>
+                        <div id="transTipText">'Only + 状语'置于句首引起部分倒装，助动词did提前。</div>
+                    </div>
+                    
+                    <div class="key-points" style="margin:16px 0;">
+                        <strong style="color:#166534;">🎯 要点：</strong>
+                        <span id="transKeyPoints">倒装结构 | 时间状语 | 成语意译</span>
+                    </div>
+                    
+                    <textarea class="translation-input" id="transInput" placeholder="请输入你的英文翻译..."></textarea>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="checkTranslation()">提交翻译</button>
+                        <button class="btn btn-secondary" onclick="showTransHint()">查看提示</button>
+                        <button class="btn btn-secondary" onclick="nextTranslation()">下一题</button>
+                    </div>
+                    
+                    <div class="analysis-box hidden" id="transResult">
+                        <div class="analysis-title">✅ 参考译文</div>
+                        <div id="transAnswer" style="font-size:1.1rem;margin-bottom:12px;"></div>
+                        <div class="analysis-title">📋 解析</div>
+                        <div id="transAnalysis"></div>
+                        <div class="analysis-title" style="color:#dc2626;margin-top:12px;">⚠️ 常见错误</div>
+                        <div id="transErrors"></div>
+                    </div>
+                </div>
+                
+                <!-- Quiz Module 15040 -->
+                <div class="quiz-module card hidden" id="quiz15040Module">
+                    <div class="subject-tabs">
+                        <button class="subject-tab active" data-mode="daily15040">📅 今日练习</button>
+                        <button class="subject-tab" data-mode="all15040">📚 全部题目</button>
+                    </div>
+                    
+                    <div class="question-card">
+                        <span class="question-type" id="qType15040">单选题</span>
+                        <div class="question-text" id="qText15040">在"四个全面"战略布局中居于引领地位的是？</div>
+                        <div class="options-area" id="qOptions15040"></div>
+                        <div class="short-answer-area hidden" id="saArea15040">
+                            <button class="btn btn-primary" onclick="showSA15040()">查看答案</button>
+                            <div class="short-answer-text hidden" id="saText15040"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-box hidden" id="qAnalysis15040">
+                        <div class="analysis-title">💡 解析</div>
+                        <div id="qAnalysisText15040"></div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="nextQ15040()">下一题</button>
+                        <button class="btn btn-secondary" onclick="reset15040()">重置进度</button>
+                    </div>
+                </div>
+                
+                <!-- Quiz Module 15043 -->
+                <div class="quiz-module card hidden" id="quiz15043Module">
+                    <div class="subject-tabs">
+                        <button class="subject-tab active" data-mode="daily15043">📅 今日练习</button>
+                        <button class="subject-tab" data-mode="all15043">📚 全部题目</button>
+                    </div>
+                    
+                    <div class="question-card">
+                        <span class="question-type" id="qType15043">单选题</span>
+                        <div class="question-text" id="qText15043">太平天国运动后期，提出《资政新篇》的人物是？</div>
+                        <div class="options-area" id="qOptions15043"></div>
+                        <div class="short-answer-area hidden" id="saArea15043">
+                            <button class="btn btn-primary" onclick="showSA15043()">查看答案</button>
+                            <div class="short-answer-text hidden" id="saText15043"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-box hidden" id="qAnalysis15043">
+                        <div class="analysis-title">💡 解析</div>
+                        <div id="qAnalysisText15043"></div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="nextQ15043()">下一题</button>
+                        <button class="btn btn-secondary" onclick="reset15043()">重置进度</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="card stats-card">
+                    <h3>📊 学习统计</h3>
+                    <div id="statsContent">
+                        <div class="stat-row">
+                            <span>今日练习</span>
+                            <strong id="todayCount">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>总练习数</span>
+                            <strong id="totalCount">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>正确率</span>
+                            <strong id="accuracy">0%</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card stats-card">
+                    <h3>📕 错题本 <span style="font-size:0.85rem;color:#dc2626;" id="wrongCount">(0)</span></h3>
+                    <div class="wrong-list" id="wrongList"></div>
+                    <button class="btn btn-secondary" style="margin-top:12px;width:100%;" onclick="clearWrong()">清空错题</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ==================== 数据库 ====================
+
+// 翻译题库
+const transDB = {
+    sentence: {
+        name: "句式结构",
+        items: [
+            { chinese: "只有在经历了无数次失败之后，他才意识到成功并非一蹴而就。", english: "Only after experiencing countless failures did he realize that success does not come overnight.", tip: "'Only + 状语'置于句首引起部分倒装，助动词did提前。", analysis: ["'Only after...' 置于句首，主句需要倒装：did he realize","'经历了' 译为 experiencing","'无数次失败' 译为 countless failures","'一蹴而就' 译为 come overnight"], errors: ["忘记倒装：Only after... he realized","时态错误：does he realize"], hint: "使用'Only after...'开头，后面主句要倒装。'一蹴而就'可以意译为'come overnight'。", keyPoints: ["倒装结构","时间状语","成语意译"], exam: "13129" },
+            { chinese: "这个问题如此复杂，以至于没有专家能够轻易解决它。", english: "So complex is the problem that no expert can solve it easily.", tip: "'So...that...'结构中So置于句首引起倒装。", analysis: ["'So + 形容词' 置于句首引起倒装","正常语序：The problem is so complex that...","'如此...以至于' 译为 so...that..."], errors: ["倒装错误：So complex the problem is","混淆so/such"], hint: "'So + 形容词'放句首要倒装，把be动词提前。", keyPoints: ["So...that倒装","程度表达"], exam: "13129" },
+            { chinese: "不仅他对这个项目感兴趣，他的同事们也表现出了极大的热情。", english: "Not only is he interested in this project, but his colleagues also show great enthusiasm.", tip: "'Not only...but (also)...'结构中，Not only置于句首引起部分倒装。", analysis: ["'Not only' 置于句首引起倒装","'but also' also放在主语后","'表现出热情' 译为 show enthusiasm"], errors: ["倒装错误：Not only he is interested","also位置错误"], hint: "'Not only'开头要倒装，把is提前。also放在主语后面。", keyPoints: ["Not only倒装","并列结构"], exam: "13129" },
+            { chinese: "尽管天气恶劣，他们还是按时完成了任务。", english: "Terrible as the weather was, they still managed to complete the task on time.", tip: "让步状语从句的倒装：形容词 + as/though + 主语 + 动词。", analysis: ["'形容词 + as + 主语 + be' 是让步倒装结构","'按时完成' 译为 complete on time","'manage to' 表示'设法做到'"], errors: ["冠词错误：A terrible as","despite用法错误"], hint: "用'形容词 + as + 主语 + was'的结构表示让步。", keyPoints: ["让步倒装","as/though用法"], exam: "13129" }
+        ]
+    },
+    tense: {
+        name: "时态语态",
+        items: [
+            { chinese: "到去年年底，我们已经完成了三个重大项目。", english: "By the end of last year, we had completed three major projects.", tip: "'by + 过去时间'是过去完成时的标志。", analysis: ["'By the end of last year' 是过去完成时标志","过去完成时：had + 过去分词","表示'过去的过去'"], errors: ["时态错误：we have completed","时态错误：we completed"], hint: "'By the end of + 过去时间'要用过去完成时had done。", keyPoints: ["过去完成时","by的用法"], exam: "13129" },
+            { chinese: "据说这座古庙建于唐朝。", english: "It is said that this ancient temple was built in the Tang Dynasty.", tip: "'据说'常用It is said that...结构。", analysis: ["'据说' 译为 It is said that...","'建于' 是被动语态：was built","'唐朝' 译为 the Tang Dynasty"], errors: ["语态错误：was build","冠词遗漏：in Tang Dynasty"], hint: "用'It is said that...'结构，从句里用被动语态was built。", keyPoints: ["被动语态","It is said结构"], exam: "13129" },
+            { chinese: "如果我当时听了你的建议，就不会犯这么严重的错误了。", english: "If I had taken your advice, I wouldn't have made such a serious mistake.", tip: "与过去事实相反的虚拟语气。", analysis: ["与过去事实相反的虚拟语气","if从句：had + 过去分词","主句：would + have + 过去分词"], errors: ["时态错误：If I took your advice","时态错误：I wouldn't make"], hint: "与过去事实相反，if从句用had done，主句用would have done。", keyPoints: ["虚拟语气","take advice"], exam: "13129" },
+            { chinese: "这本书已经被翻译成多种语言，深受世界各地读者的喜爱。", english: "This book has been translated into many languages and is well received by readers around the world.", tip: "现在完成时的被动语态。", analysis: ["'已经被翻译' 用现在完成时被动：has been translated","'深受喜爱' 译为 is well received"], errors: ["时态错误：was translated","介词错误：translated to"], hint: "'已经被翻译'用现在完成时被动has been translated into。", keyPoints: ["现在完成时被动","translate into"], exam: "13129" }
+        ]
+    },
+    clause: {
+        name: "从句翻译",
+        items: [
+            { chinese: "他所说的与所做的完全不一致。", english: "What he said is completely inconsistent with what he did.", tip: "what引导的名词性从句。", analysis: ["'What he said' what引导主语从句","'what he did' what引导宾语从句","'与...不一致' 译为 be inconsistent with"], errors: ["连接词错误：That he said","介词错误：inconsistent to"], hint: "用what引导从句表示'所...的'。", keyPoints: ["what从句","inconsistent with"], exam: "13129" },
+            { chinese: "这就是他拒绝接受那份工作的原因。", english: "This is why he refused to take that job.", tip: "why引导的表语从句。", analysis: ["'This is why...' why引导表语从句","'拒绝接受' 译为 refuse to take"], errors: ["连接词错误：This is because"], hint: "用'This is why...'表示'这就是...的原因'。", keyPoints: ["why表语从句","refuse to do"], exam: "13129" },
+            { chinese: "无论遇到什么困难，我们都不会放弃。", english: "Whatever difficulties we may encounter, we will never give up.", tip: "whatever引导让步状语从句。", analysis: ["'Whatever' 引导让步状语从句","'遇到困难' 译为 encounter difficulties"], errors: ["结构错误：Whatever difficult"], hint: "用'Whatever difficulties'引导让步从句。", keyPoints: ["whatever从句","encounter"], exam: "13129" },
+            { chinese: "只要你努力，就一定能成功。", english: "As long as you work hard, you are bound to succeed.", tip: "as long as引导条件状语从句。", analysis: ["'As long as' 引导条件状语从句","'一定能' 译为 are bound to"], errors: ["结构错误：As long as you will work"], hint: "用'As long as'引导条件从句，从句用一般现在时。", keyPoints: ["as long as","be bound to"], exam: "13129" }
+        ]
+    },
+    rhetoric: {
+        name: "修辞表达",
+        items: [
+            { chinese: "时间如白驹过隙，转眼间十年过去了。", english: "Time flies like a white steed passing a crack, and ten years have passed in the twinkling of an eye.", tip: "中文成语的直译与意译结合。", analysis: ["'白驹过隙' 直译保留意象","'转眼间' 译为 in the twinkling of an eye"], errors: ["直译错误：white horse past gap"], hint: "'白驹过隙'可以直译保留意象。", keyPoints: ["成语翻译","修辞保留"], exam: "13162" },
+            { chinese: "这个问题说起来容易做起来难。", english: "This problem is easier said than done.", tip: "英语习语'easier said than done'。", analysis: ["'easier said than done' 是英语习语"], errors: ["中式英语：say easy do hard"], hint: "直接用英语习语'easier said than done'。", keyPoints: ["习语运用","地道表达"], exam: "13162" },
+            { chinese: "他像热锅上的蚂蚁一样坐立不安。", english: "He was as restless as a cat on hot bricks.", tip: "中英习语意象不同。", analysis: ["中文：热锅上的蚂蚁","英文对应：a cat on hot bricks"], errors: ["直译错误：ant on hot pot"], hint: "不要直译，英语对应说法是'a cat on hot bricks'。", keyPoints: ["习语对应","文化差异"], exam: "13162" }
+        ]
+    },
+    idiom: {
+        name: "习语成语",
+        items: [
+            { chinese: "我们必须全力以赴，才能按时完成这个项目。", english: "We must go all out to complete this project on time.", tip: "'全力以赴'译为go all out。", analysis: ["'全力以赴' 译为 go all out","'按时' 译为 on time"], errors: ["中式英语：use all our strength"], hint: "'全力以赴'用习语'go all out'。", keyPoints: ["习语运用","go all out"], exam: "13162" },
+            { chinese: "他对这个计划不置可否，保持沉默。", english: "He remained noncommittal about the plan and kept silent.", tip: "'不置可否'译为noncommittal。", analysis: ["'不置可否' 译为 noncommittal","'保持沉默' 译为 keep silent"], errors: ["中式英语：not say yes or no"], hint: "'不置可否'用形容词noncommittal。", keyPoints: ["noncommittal","keep silent"], exam: "13162" },
+            { chinese: "这件事终于水落石出了。", english: "The truth about this matter has finally come to light.", tip: "'水落石出'译为come to light。", analysis: ["'水落石出' 译为 come to light"], errors: ["直译错误：water fell and stone came out"], hint: "'水落石出'意译为'真相大白'，用'come to light'。", keyPoints: ["意译","come to light"], exam: "13162" }
+        ]
+    },
+    culture: {
+        name: "文化负载",
+        items: [
+            { chinese: "春节是中国最重要的传统节日。", english: "The Spring Festival is the most important traditional festival in China.", tip: "文化专有名词的翻译。", analysis: ["'春节' 译为 the Spring Festival","'最重要的' 译为 the most important"], errors: ["大小写错误：spring festival","冠词遗漏"], hint: "'春节'是the Spring Festival，注意加the和大写。", keyPoints: ["专有名词","冠词使用"], exam: "13129" },
+            { chinese: "中秋节人们会吃月饼、赏月。", english: "On the Mid-Autumn Festival, people eat mooncakes and admire the full moon.", tip: "节日表达用介词on。", analysis: ["节日用介词on","'月饼' 译为 mooncakes","'赏月' 译为 admire the moon"], errors: ["介词错误：In the Mid-Autumn Festival"], hint: "节日用on，'月饼'是mooncakes，'赏月'用admire the moon。", keyPoints: ["节日介词","mooncake"], exam: "13129" },
+            { chinese: "长城是世界七大奇迹之一。", english: "The Great Wall is one of the seven wonders of the world.", tip: "'七大奇迹'是seven wonders。", analysis: ["'长城' 译为 the Great Wall","'one of + 复数名词' 是固定结构"], errors: ["冠词遗漏","单复数错误"], hint: "'长城'是the Great Wall，用'one of + 复数'结构。", keyPoints: ["专有名词","one of结构"], exam: "13129" }
+        ]
+    },
+    writing: {
+        name: "写作句型",
+        items: [
+            { chinese: "随着科技的发展，人们的生活方式发生了巨大变化。", english: "With the development of science and technology, people's lifestyles have undergone tremendous changes.", tip: "'随着...'常用With...开头。", analysis: ["'随着...' 译为 With...","'发生巨大变化' 译为 have undergone tremendous changes"], errors: ["结构错误：With technology develops"], hint: "用'With the development of...'开头。", keyPoints: ["With结构","undergo changes"], exam: "13162" },
+            { chinese: "综上所述，我们可以得出结论：环境保护刻不容缓。", english: "In conclusion, we can draw the conclusion that environmental protection is of great urgency.", tip: "结论段经典句型。", analysis: ["'综上所述' 译为 In conclusion","'得出结论' 译为 draw the conclusion"], errors: ["中式英语：According to above"], hint: "用'In conclusion'开头，'得出结论'是draw the conclusion。", keyPoints: ["结论句型","draw conclusion"], exam: "13162" }
+        ]
+    }
+};
+
+// 15040 新思想题库
+const quiz15040 = [
+    { id: 1, type: '单选', question: '在"四个全面"战略布局中居于引领地位的是？', options: ['A.全面深化改革','B.全面从严治党','C.全面依法治国','D.全面建设社会主义现代化国家'], answer: 'D', analysis: '全面建设社会主义现代化国家是战略目标，在"四个全面"中居于引领地位。' },
+    { id: 2, type: '单选', question: '中国式现代化建设的出发点和落脚点是？', options: ['A.农轻重协调发展','B.实现人民对美好生活的向往','C.科技跨越式发展','D.独立自主'], answer: 'B', analysis: '必须把实现人民对美好生活的向往作为现代化建设的出发点和落脚点。' },
+    { id: 3, type: '单选', question: '中国特色社会主义最本质的特征是？', options: ['A.中国共产党领导','B.以公有制为主体','C.按劳分配','D.人民民主专政'], answer: 'A', analysis: '习近平指出，中国特色社会主义最本质的特征是中国共产党领导。' },
+    { id: 4, type: '单选', question: '党执政的最大底气是？', options: ['A.人民','B.军队','C.经济实力','D.制度优势'], answer: 'A', analysis: '人民是党执政的最大底气，也是党执政最深厚的根基。' },
+    { id: 5, type: '单选', question: '新时代坚持和发展中国特色社会主义的根本动力是？', options: ['A.改革开放','B.科技创新','C.从严治党','D.共同富裕'], answer: 'A', analysis: '改革开放是决定当代中国命运的关键一招。' },
+    { id: 6, type: '简答', question: '怎样深刻领悟"两个确立"的决定性意义？', answer: '"两个确立"是党在新时代取得的重大政治成果，对新时代党和国家事业发展、对推进中华民族伟大复兴历史进程具有决定性意义。', analysis: '核心考点：确立习近平同志党中央的核心、全党的核心地位；确立习近平新时代中国特色社会主义思想的指导地位。' },
+    { id: 7, type: '简答', question: '简述中国式现代化的中国特色。', answer: '①人口规模巨大的现代化；②全体人民共同富裕的现代化；③物质文明和精神文明相协调的现代化；④人与自然和谐共生的现代化；⑤走和平发展道路的现代化。', analysis: '必须深刻理解五个特征，常考简答/论述。' },
+    { id: 8, type: '简答', question: '简述全过程人民民主的内涵。', answer: '全过程人民民主是社会主义民主政治的本质属性，是全链条、全方位、全覆盖的民主，是最广泛、最真实、最管用的社会主义民主。', analysis: '包括民主选举、民主协商、民主决策、民主管理、民主监督等环节。' }
+];
+
+// 15043 近代史题库
+const quiz15043 = [
+    { id: 1, type: '单选', question: '太平天国运动后期，提出《资政新篇》的人物是？', options: ['A.洪秀全','B.杨秀清','C.洪仁玕','D.石达开'], answer: 'C', analysis: '洪仁玕提出的《资政新篇》是近代中国最早的发展资本主义的方案。' },
+    { id: 2, type: '单选', question: '新文化运动兴起的标志是？', options: ['A.《新青年》创刊','B.五四运动','C.北京大学改革','D.文学革命'], answer: 'A', analysis: '1915年陈独秀在上海创办《青年杂志》(后改名《新青年》)，新文化运动开始。' },
+    { id: 3, type: '单选', question: '中国共产党第一次明确提出反帝反封建民主革命纲领的会议是？', options: ['A.中共一大','B.中共二大','C.中共三大','D.遵义会议'], answer: 'B', analysis: '中共二大制定了最低纲领(反帝反封建)和最高纲领。' },
+    { id: 4, type: '单选', question: '抗日战争全面爆发的标志是？', options: ['A.九一八事变','B.华北事变','C.卢沟桥事变','D.八一三事变'], answer: 'C', analysis: '1937年7月7日卢沟桥事变，全面抗战爆发。' },
+    { id: 5, type: '单选', question: '中国近代史上第一个不平等条约是？', options: ['A.《南京条约》','B.《北京条约》','C.《马关条约》','D.《辛丑条约》'], answer: 'A', analysis: '1842年《南京条约》。' },
+    { id: 6, type: '简答', question: '简述洋务运动的历史作用。', answer: '洋务运动是中国近代化的开端，引进了西方先进技术，培养了近代人才，客观上促进了中国民族资本主义的产生。', analysis: '注意区分积极作用和局限性。' },
+    { id: 7, type: '简答', question: '简述辛亥革命的历史意义。', answer: '辛亥革命推翻了清王朝统治，结束了中国两千多年的封建君主专制制度，建立了资产阶级共和国，使民主共和观念深入人心。', analysis: '注意答出"推翻帝制"、"建立共和"、"思想解放"三个层面。' },
+    { id: 8, type: '简答', question: '简述五四运动的历史特点。', answer: '五四运动是一次彻底的反帝反封建的革命运动；是一场真正的群众运动；促进了马克思主义在中国的传播。', analysis: '核心：彻底性、群众性、思想启蒙性。' }
+];
+
+// ==================== 状态管理 ====================
+let currentModule = 'translation';
+let currentTransCategory = 'all';
+let currentTrans = null;
+let currentQ15040 = null;
+let currentQ15043 = null;
+let stats = { total: 0, correct: 0, today: 0, wrong: [] };
+
+// ==================== 初始化 ====================
+function init() {
+    updateCountdown();
+    loadStats();
+    setupEventListeners();
+    nextTranslation();
+    updateStats();
+}
+
+function updateCountdown() {
+    const examDate = new Date('2026-04-11');
+    const today = new Date();
+    const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+    document.getElementById('countdown').textContent = diff > 0 ? diff : 0;
+}
+
+function loadStats() {
+    try {
+        const saved = localStorage.getItem('examStats');
+        if (saved) stats = JSON.parse(saved);
+    } catch(e) {}
+}
+
+function saveStats() {
+    try {
+        localStorage.setItem('examStats', JSON.stringify(stats));
+    } catch(e) {}
+    updateStats();
+}
+
+function updateStats() {
+    document.getElementById('todayCount').textContent = stats.today;
+    document.getElementById('totalCount').textContent = stats.total;
+    document.getElementById('accuracy').textContent = stats.total > 0 ? Math.round(stats.correct/stats.total*100) + '%' : '0%';
+    document.getElementById('wrongCount').textContent = '(' + stats.wrong.length + ')';
+    
+    const wrongList = document.getElementById('wrongList');
+    wrongList.innerHTML = stats.wrong.slice(-5).map(w => `<div class="wrong-item">${w}</div>`).join('');
+}
+
+// ==================== 事件监听 ====================
+function setupEventListeners() {
+    // Module切换
+    document.querySelectorAll('.module-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentModule = btn.dataset.module;
+            switchModule();
+        });
+    });
+    
+    // Translation分类
+    document.querySelectorAll('#transCategoryTabs .category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('#transCategoryTabs .category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentTransCategory = tab.dataset.category;
+            nextTranslation();
+        });
+    });
+    
+    // Quiz模式切换
+    document.querySelectorAll('[data-mode]').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const parent = tab.parentElement;
+            parent.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+}
+
+function switchModule() {
+    document.getElementById('translationModule').classList.add('hidden');
+    document.getElementById('quiz15040Module').classList.add('hidden');
+    document.getElementById('quiz15043Module').classList.add('hidden');
+    
+    if (currentModule === 'translation') {
+        document.getElementById('translationModule').classList.remove('hidden');
+        nextTranslation();
+    } else if (currentModule === 'quiz15040') {
+        document.getElementById('quiz15040Module').classList.remove('hidden');
+        nextQ15040();
+    } else if (currentModule === 'quiz15043') {
+        document.getElementById('quiz15043Module').classList.remove('hidden');
+        nextQ15043();
+    }
+}
+
+// ==================== 翻译功能 ====================
+function nextTranslation() {
+    document.getElementById('transInput').value = '';
+    document.getElementById('transResult').classList.add('hidden');
+    
+    let pool = [];
+    if (currentTransCategory === 'all') {
+        Object.values(transDB).forEach(cat => {
+            pool = pool.concat(cat.items.map(s => ({...s, category: cat.name})));
+        });
+    } else if (transDB[currentTransCategory]) {
+        pool = transDB[currentTransCategory].items.map(s => ({...s, category: transDB[currentTransCategory].name}));
+    }
+    
+    if (pool.length === 0) return;
+    currentTrans = pool[Math.floor(Math.random() * pool.length)];
+    
+    document.getElementById('transType').textContent = currentTrans.category;
+    document.getElementById('transExam').textContent = currentTrans.exam + '考点';
+    document.getElementById('chineseSentence').textContent = currentTrans.chinese;
+    document.getElementById('transTipText').textContent = currentTrans.tip;
+    document.getElementById('transKeyPoints').textContent = currentTrans.keyPoints.join(' | ');
+}
+
+function checkTranslation() {
+    const input = document.getElementById('transInput').value.trim();
+    if (!input) { alert('请先输入翻译！'); return; }
+    
+    document.getElementById('transAnswer').textContent = currentTrans.english;
+    document.getElementById('transAnalysis').innerHTML = currentTrans.analysis.map(a => `<div style="margin:6px 0;">• ${a}</div>`).join('');
+    document.getElementById('transErrors').innerHTML = currentTrans.errors.map(e => `<div style="margin:6px 0;color:#dc2626;">✗ ${e}</div>`).join('');
+    document.getElementById('transResult').classList.remove('hidden');
+    
+    stats.total++;
+    stats.today++;
+    saveStats();
+}
+
+function showTransHint() {
+    alert('💡 提示：' + currentTrans.hint);
+}
+
+// ==================== 15040 Quiz ====================
+function nextQ15040() {
+    document.getElementById('qAnalysis15040').classList.add('hidden');
+    document.getElementById('saArea15040').classList.add('hidden');
+    document.getElementById('saText15040').classList.add('hidden');
+    
+    currentQ15040 = quiz15040[Math.floor(Math.random() * quiz15040.length)];
+    
+    document.getElementById('qType15040').textContent = currentQ15040.type + '题';
+    document.getElementById('qText15040').textContent = currentQ15040.question;
+    
+    const optsDiv = document.getElementById('qOptions15040');
+    if (currentQ15040.type === '单选') {
+        optsDiv.classList.remove('hidden');
+        document.getElementById('saArea15040').classList.add('hidden');
+        optsDiv.innerHTML = currentQ15040.options.map((opt, i) => 
+            `<div class="option-item" onclick="selectOption15040('${opt[0]}', this)">
+                <span class="option-prefix">${opt[0]}</span>
+                <span>${opt.substring(2)}</span>
+            </div>`
+        ).join('');
+    } else {
+        optsDiv.classList.add('hidden');
+        document.getElementById('saArea15040').classList.remove('hidden');
+    }
+}
+
+function selectOption15040(answer, el) {
+    document.querySelectorAll('#qOptions15040 .option-item').forEach(item => item.classList.add('disabled-option'));
+    
+    if (answer === currentQ15040.answer) {
+        el.classList.add('correct');
+        stats.correct++;
+    } else {
+        el.classList.add('wrong');
+        stats.wrong.push('15040: ' + currentQ15040.question.substring(0, 20) + '...');
+    }
+    
+    document.getElementById('qAnalysisText15040').textContent = currentQ15040.analysis;
+    document.getElementById('qAnalysis15040').classList.remove('hidden');
+    
+    stats.total++;
+    stats.today++;
+    saveStats();
+}
+
+function showSA15040() {
+    document.getElementById('saText15040').textContent = currentQ15040.answer + '\n\n解析：' + currentQ15040.analysis;
+    document.getElementById('saText15040').classList.remove('hidden');
+    stats.total++;
+    stats.today++;
+    saveStats();
+}
+
+function reset15040() {
+    if (confirm('确定重置15040学习进度？')) {
+        stats.today = 0;
+        saveStats();
+        nextQ15040();
+    }
+}
+
+// ==================== 15043 Quiz ====================
+function nextQ15043() {
+    document.getElementById('qAnalysis15043').classList.add('hidden');
+    document.getElementById('saArea15043').classList.add('hidden');
+    document.getElementById('saText15043').classList.add('hidden');
+    
+    currentQ15043 = quiz15043[Math.floor(Math.random() * quiz15043.length)];
+    
+    document.getElementById('qType15043').textContent = currentQ15043.type + '题';
+    document.getElementById('qText15043').textContent = currentQ15043.question;
+    
+    const optsDiv = document.getElementById('qOptions15043');
+    if (currentQ15043.type === '单选') {
+        optsDiv.classList.remove('hidden');
+        document.getElementById('saArea15043').classList.add('hidden');
+        optsDiv.innerHTML = currentQ15043.options.map((opt, i) => 
+            `<div class="option-item" onclick="selectOption15043('${opt[0]}', this)">
+                <span class="option-prefix">${opt[0]}</span>
+                <span>${opt.substring(2)}</span>
+            </div>`
+        ).join('');
+    } else {
+        optsDiv.classList.add('hidden');
+        document.getElementById('saArea15043').classList.remove('hidden');
+    }
+}
+
+function selectOption15043(answer, el) {
+    document.querySelectorAll('#qOptions15043 .option-item').forEach(item => item.classList.add('disabled-option'));
+    
+    if (answer === currentQ15043.answer) {
+        el.classList.add('correct');
+        stats.correct++;
+    } else {
+        el.classList.add('wrong');
+        stats.wrong.push('15043: ' + currentQ15043.question.substring(0, 20) + '...');
+    }
+    
+    document.getElementById('qAnalysisText15043').textContent = currentQ15043.analysis;
+    document.getElementById('qAnalysis15043').classList.remove('hidden');
+    
+    stats.total++;
+    stats.today++;
+    saveStats();
+}
+
+function showSA15043() {
+    document.getElementById('saText15043').textContent = currentQ15043.answer + '\n\n解析：' + currentQ15043.analysis;
+    document.getElementById('saText15043').classList.remove('hidden');
+    stats.total++;
+    stats.today++;
+    saveStats();
+}
+
+function reset15043() {
+    if (confirm('确定重置15043学习进度？')) {
+        stats.today = 0;
+        saveStats();
+        nextQ15043();
+    }
+}
+
+// ==================== 通用功能 ====================
+function clearWrong() {
+    if (confirm('确定清空所有错题？')) {
+        stats.wrong = [];
+        saveStats();
+    }
+}
+
+// 启动
+init();
+</script>
+</body>
+</html>
