@@ -2,887 +2,1467 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>自考备考综合平台 | 13162+13129+15040+15043</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自考备考综合平台 | Annie</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: #f0f4fa;
-            min-height: 100vh;
-            padding: 20px 16px 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
         }
-        .app-container {
-            max-width: 1400px;
+        
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
         
-        /* Header */
-        .main-header {
+        header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 30px;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border-radius: 24px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            box-shadow: 0 20px 40px rgba(30,60,114,0.3);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(79, 70, 229, 0.3);
         }
-        .main-header h1 {
-            font-size: 2.2rem;
+        
+        header h1 {
+            font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        .main-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
         }
         
-        /* Module Selection */
-        .module-selector {
+        .exam-info {
             display: flex;
-            gap: 15px;
             justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .exam-info span {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+        
+        /* 倒计时 */
+        .countdown-section {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .countdown-display {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-item {
+            text-align: center;
+        }
+        
+        .countdown-item .number {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--primary);
+            display: block;
+            min-width: 80px;
+        }
+        
+        .countdown-item .label {
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+        
+        .countdown-item.days .number {
+            color: var(--danger);
+        }
+        
+        /* 导航标签 */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 30px;
             flex-wrap: wrap;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .module-btn {
-            padding: 16px 32px;
-            border-radius: 50px;
+        
+        .nav-tab {
+            padding: 12px 24px;
             border: none;
-            font-weight: 600;
-            font-size: 1.1rem;
+            background: transparent;
+            color: var(--text-light);
             cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.95em;
             transition: all 0.3s;
-            background: white;
-            color: #1e3a5f;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .module-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        .module-btn.active {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            box-shadow: 0 8px 20px rgba(30,60,114,0.4);
-        }
-        
-        /* Content Area */
-        .content-area {
-            display: grid;
-            grid-template-columns: 1fr 0.4fr;
-            gap: 24px;
-        }
-        @media (max-width: 900px) {
-            .content-area { grid-template-columns: 1fr; }
-        }
-        
-        /* Card Styles */
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border: 1px solid #e0eaf5;
-        }
-        
-        /* Translation Module */
-        .translation-module .category-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .translation-module .category-tab {
-            background: #f1f5f9;
-            border: none;
-            color: #475569;
-            padding: 10px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
             font-weight: 500;
         }
-        .translation-module .category-tab.active {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-        }
-        .chinese-sentence {
-            font-size: 1.3rem;
-            color: #1e293b;
-            line-height: 1.7;
-            margin-bottom: 20px;
-            padding: 24px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            border-left: 4px solid #2563eb;
-        }
-        .translation-input {
-            width: 100%;
-            min-height: 120px;
-            padding: 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            resize: vertical;
-            font-family: inherit;
-        }
-        .translation-input:focus {
-            outline: none;
-            border-color: #2563eb;
+        
+        .nav-tab:hover {
+            background: var(--bg);
+            color: var(--text);
         }
         
-        /* Quiz Module */
-        .quiz-module .subject-tabs {
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* 内容区域 */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h2 .icon {
+            font-size: 1.2em;
+        }
+        
+        /* 番茄钟 */
+        .pomodoro-container {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .pomodoro-timer {
+            font-size: 6em;
+            font-weight: bold;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+            margin: 30px 0;
+        }
+        
+        .pomodoro-timer.break {
+            color: var(--success);
+        }
+        
+        .pomodoro-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .pomodoro-modes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .pomodoro-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .stat-item h4 {
+            font-size: 2em;
+            color: var(--primary);
+        }
+        
+        .stat-item p {
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+        
+        /* 打卡 */
+        .checkin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .checkin-item {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .checkin-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .checkin-item.completed {
+            background: #d1fae5;
+            border-color: var(--success);
+        }
+        
+        .checkin-item .check-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .checkin-item.completed .check-icon::before {
+            content: "✅";
+        }
+        
+        .checkin-item:not(.completed) .check-icon::before {
+            content: "⭕";
+        }
+        
+        .checkin-calendar {
+            margin-top: 30px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 0.85em;
+            position: relative;
+        }
+        
+        .calendar-day.checked {
+            background: var(--success);
+            color: white;
+        }
+        
+        .calendar-day.today {
+            border: 2px solid var(--primary);
+        }
+        
+        /* 错题本 */
+        .filter-bar {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        .quiz-module .subject-tab {
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            background: #f1f5f9;
-            color: #475569;
-            transition: all 0.3s;
-        }
-        .quiz-module .subject-tab.active {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-        }
-        .question-card {
-            background: #fafcff;
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: white;
             border-radius: 20px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
-        }
-        .question-type {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e40af;
-            font-weight: 600;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-        }
-        .question-text {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #0f172a;
-            line-height: 1.5;
-            margin-bottom: 24px;
-        }
-        .options-area {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .option-item {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px 20px;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .option-item:hover {
-            border-color: #3b82f6;
-            background: #f8fafc;
-        }
-        .option-item.correct {
-            background: #dcfce7;
-            border-color: #22c55e;
-        }
-        .option-item.wrong {
-            background: #fee2e2;
-            border-color: #ef4444;
-        }
-        .option-prefix {
-            font-weight: 700;
-            background: #f1f5f9;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            color: #475569;
-        }
-        .short-answer-area {
-            background: #f1f5f9;
-            border-radius: 16px;
-            padding: 20px;
-            margin: 16px 0;
-        }
-        .short-answer-text {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 12px;
-            line-height: 1.7;
-            color: #334155;
+            font-size: 0.9em;
         }
         
-        /* Analysis Box */
-        .analysis-box {
-            background: #eff6ff;
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 20px;
-            border-left: 4px solid #3b82f6;
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
-        .analysis-title {
-            font-weight: 700;
-            color: #1e40af;
+        
+        .error-item {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .error-item.reviewed {
+            border-left-color: var(--success);
+            opacity: 0.7;
+        }
+        
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
         }
         
-        /* Buttons */
-        .btn {
-            border: none;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        .error-subject {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary);
             color: white;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(37,99,235,0.4);
-        }
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
-        }
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            border-radius: 12px;
+            font-size: 0.8em;
         }
         
-        /* Sidebar */
-        .sidebar {
+        .error-actions {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .stats-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 16px;
-            color: #1e293b;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .stat-row:last-child { border-bottom: none; }
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
-            border-radius: 4px;
-            transition: width 0.5s ease;
+            gap: 10px;
         }
         
-        /* Wrong List */
-        .wrong-list {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .wrong-item {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            padding: 10px 12px;
-            margin: 8px 0;
-            font-size: 0.9rem;
-            color: #7f1d1d;
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 5px;
         }
         
-        /* Exam Info */
-        .exam-info-bar {
-            display: flex;
+        .add-error-form {
+            display: grid;
             gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
             margin-bottom: 20px;
         }
-        .exam-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 0.95rem;
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
-        .countdown-box {
-            text-align: center;
-            margin: 20px 0;
+        
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.9em;
         }
-        .countdown-number {
-            font-size: 3rem;
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* 单词本 */
+        .word-card {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .word-title {
+            font-size: 1.3em;
             font-weight: bold;
-            color: #fbbf24;
         }
         
-        /* Hidden */
-        .hidden { display: none !important; }
+        .word-phonetic {
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
         
-        /* Responsive */
-        @media (max-width: 600px) {
-            .main-header h1 { font-size: 1.6rem; }
-            .module-btn { padding: 12px 20px; font-size: 0.95rem; }
-            .question-text { font-size: 1.1rem; }
-            .chinese-sentence { font-size: 1.1rem; }
+        .word-meaning {
+            color: var(--text);
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .word-meaning.hidden {
+            filter: blur(5px);
+            user-select: none;
+        }
+        
+        .word-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .word-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .word-search input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        /* 作文素材 */
+        .material-item {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .material-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .material-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--warning);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .material-content {
+            line-height: 1.8;
+            color: var(--text);
+        }
+        
+        .material-note {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+        
+        /* 学习统计 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: var(--text-light);
+        }
+        
+        /* 进度条 */
+        .progress-section {
+            margin-top: 20px;
+        }
+        
+        .progress-item {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .exam-info {
+                gap: 15px;
+            }
+            
+            .countdown-item .number {
+                font-size: 2em;
+            }
+            
+            .pomodoro-timer {
+                font-size: 4em;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <div class="main-header">
+    <div class="container">
+        <header>
             <h1>📚 自考备考综合平台</h1>
             <p>13162英语写作 | 13129英汉互译 | 15040新思想 | 15043近代史</p>
-            <div class="exam-info-bar">
-                <span class="exam-badge">📅 考试日期：4月11日</span>
-                <span class="exam-badge">⏰ 倒计时：<span id="countdown">--</span> 天</span>
+            <div class="exam-info">
+                <span>📅 考试日期：2026年4月11日</span>
+                <span>🎯 目标：一次过4科</span>
+                <span>💪 坚持就是胜利</span>
             </div>
-        </div>
+        </header>
         
-        <!-- Module Selector -->
-        <div class="module-selector">
-            <button class="module-btn active" data-module="translation">📝 汉译英翻译</button>
-            <button class="module-btn" data-module="quiz15040">📖 15040 新思想</button>
-            <button class="module-btn" data-module="quiz15043">📜 15043 近代史</button>
-        </div>
+        <!-- 倒计时 -->
+        <section class="countdown-section">
+            <h2>⏰ 考试倒计时</h2>
+            <div class="countdown-display" id="countdown">
+                <div class="countdown-item days">
+                    <span class="number" id="days">--</span>
+                    <span class="label">天</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="hours">--</span>
+                    <span class="label">小时</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="minutes">--</span>
+                    <span class="label">分钟</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="number" id="seconds">--</span>
+                    <span class="label">秒</span>
+                </div>
+            </div>
+        </section>
         
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Translation Module -->
-                <div class="translation-module card" id="translationModule">
-                    <div class="category-tabs" id="transCategoryTabs">
-                        <button class="category-tab active" data-category="all">全部考点</button>
-                        <button class="category-tab" data-category="sentence">句式结构</button>
-                        <button class="category-tab" data-category="tense">时态语态</button>
-                        <button class="category-tab" data-category="clause">从句翻译</button>
-                        <button class="category-tab" data-category="rhetoric">修辞表达</button>
-                        <button class="category-tab" data-category="idiom">习语成语</button>
-                        <button class="category-tab" data-category="culture">文化负载</button>
-                        <button class="category-tab" data-category="writing">写作句型</button>
-                    </div>
-                    
-                    <div class="sentence-header">
-                        <span class="question-type" id="transType">句式结构</span>
-                        <span class="exam-badge" style="background:#dbeafe;color:#1e40af;" id="transExam">13129考点</span>
-                    </div>
-                    
-                    <div class="chinese-sentence" id="chineseSentence">只有在经历了无数次失败之后，他才意识到成功并非一蹴而就。</div>
-                    
-                    <div class="analysis-box" id="transTip">
-                        <div class="analysis-title">💡 翻译策略</div>
-                        <div id="transTipText">'Only + 状语'置于句首引起部分倒装，助动词did提前。</div>
-                    </div>
-                    
-                    <div class="key-points" style="margin:16px 0;">
-                        <strong style="color:#166534;">🎯 要点：</strong>
-                        <span id="transKeyPoints">倒装结构 | 时间状语 | 成语意译</span>
-                    </div>
-                    
-                    <textarea class="translation-input" id="transInput" placeholder="请输入你的英文翻译..."></textarea>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="checkTranslation()">提交翻译</button>
-                        <button class="btn btn-secondary" onclick="showTransHint()">查看提示</button>
-                        <button class="btn btn-secondary" onclick="nextTranslation()">下一题</button>
-                    </div>
-                    
-                    <div class="analysis-box hidden" id="transResult">
-                        <div class="analysis-title">✅ 参考译文</div>
-                        <div id="transAnswer" style="font-size:1.1rem;margin-bottom:12px;"></div>
-                        <div class="analysis-title">📋 解析</div>
-                        <div id="transAnalysis"></div>
-                        <div class="analysis-title" style="color:#dc2626;margin-top:12px;">⚠️ 常见错误</div>
-                        <div id="transErrors"></div>
-                    </div>
+        <!-- 导航 -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('home')">🏠 首页</button>
+            <button class="nav-tab" onclick="showSection('pomodoro')">🍅 番茄钟</button>
+            <button class="nav-tab" onclick="showSection('checkin')">✅ 每日打卡</button>
+            <button class="nav-tab" onclick="showSection('errors')">❌ 错题本</button>
+            <button class="nav-tab" onclick="showSection('words')">📖 单词本</button>
+            <button class="nav-tab" onclick="showSection('materials')">✍️ 作文素材</button>
+        </nav>
+        
+        <!-- 首页/学习统计 -->
+        <section id="home" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="todayStudy">0</h3>
+                    <p>今日学习(分钟)</p>
                 </div>
-                
-                <!-- Quiz Module 15040 -->
-                <div class="quiz-module card hidden" id="quiz15040Module">
-                    <div class="subject-tabs">
-                        <button class="subject-tab active" data-mode="daily15040">📅 今日练习</button>
-                        <button class="subject-tab" data-mode="all15040">📚 全部题目</button>
-                    </div>
-                    
-                    <div class="question-card">
-                        <span class="question-type" id="qType15040">单选题</span>
-                        <div class="question-text" id="qText15040">在"四个全面"战略布局中居于引领地位的是？</div>
-                        <div class="options-area" id="qOptions15040"></div>
-                        <div class="short-answer-area hidden" id="saArea15040">
-                            <button class="btn btn-primary" onclick="showSA15040()">查看答案</button>
-                            <div class="short-answer-text hidden" id="saText15040"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="analysis-box hidden" id="qAnalysis15040">
-                        <div class="analysis-title">💡 解析</div>
-                        <div id="qAnalysisText15040"></div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="nextQ15040()">下一题</button>
-                        <button class="btn btn-secondary" onclick="reset15040()">重置进度</button>
-                    </div>
+                <div class="stat-card">
+                    <h3 id="totalStudy">0</h3>
+                    <p>累计学习(小时)</p>
                 </div>
-                
-                <!-- Quiz Module 15043 -->
-                <div class="quiz-module card hidden" id="quiz15043Module">
-                    <div class="subject-tabs">
-                        <button class="subject-tab active" data-mode="daily15043">📅 今日练习</button>
-                        <button class="subject-tab" data-mode="all15043">📚 全部题目</button>
-                    </div>
-                    
-                    <div class="question-card">
-                        <span class="question-type" id="qType15043">单选题</span>
-                        <div class="question-text" id="qText15043">太平天国运动后期，提出《资政新篇》的人物是？</div>
-                        <div class="options-area" id="qOptions15043"></div>
-                        <div class="short-answer-area hidden" id="saArea15043">
-                            <button class="btn btn-primary" onclick="showSA15043()">查看答案</button>
-                            <div class="short-answer-text hidden" id="saText15043"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="analysis-box hidden" id="qAnalysis15043">
-                        <div class="analysis-title">💡 解析</div>
-                        <div id="qAnalysisText15043"></div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="nextQ15043()">下一题</button>
-                        <button class="btn btn-secondary" onclick="reset15043()">重置进度</button>
-                    </div>
+                <div class="stat-card">
+                    <h3 id="todayCheckin">0</h3>
+                    <p>今日打卡</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="streakDays">0</h3>
+                    <p>连续打卡(天)</p>
                 </div>
             </div>
             
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="card stats-card">
-                    <h3>📊 学习统计</h3>
-                    <div id="statsContent">
-                        <div class="stat-row">
-                            <span>今日练习</span>
-                            <strong id="todayCount">0</strong>
+            <div class="card">
+                <h2><span class="icon">📊</span>各科进度</h2>
+                <div class="progress-section" id="subjectProgress">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><span class="icon">🎯</span>今日任务</h2>
+                <div class="checkin-grid" id="todayTasks">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- 番茄钟 -->
+        <section id="pomodoro" class="content-section">
+            <div class="card">
+                <div class="pomodoro-container">
+                    <div class="pomodoro-modes">
+                        <button class="mode-btn active" onclick="setPomodoroMode(25)">专注 25分</button>
+                        <button class="mode-btn" onclick="setPomodoroMode(5)">短休息 5分</button>
+                        <button class="mode-btn" onclick="setPomodoroMode(15)">长休息 15分</button>
+                    </div>
+                    <div class="pomodoro-timer" id="timer">25:00</div>
+                    <div class="pomodoro-controls">
+                        <button class="btn btn-primary" id="startBtn" onclick="startTimer()">开始</button>
+                        <button class="btn btn-secondary" onclick="pauseTimer()">暂停</button>
+                        <button class="btn btn-secondary" onclick="resetTimer()">重置</button>
+                    </div>
+                    <p style="color: var(--text-light);">💡 每完成4个番茄钟，建议休息15-30分钟</p>
+                    
+                    <div class="pomodoro-stats">
+                        <div class="stat-item">
+                            <h4 id="todayPomos">0</h4>
+                            <p>今日番茄</p>
                         </div>
-                        <div class="stat-row">
-                            <span>总练习数</span>
-                            <strong id="totalCount">0</strong>
+                        <div class="stat-item">
+                            <h4 id="totalPomos">0</h4>
+                            <p>累计番茄</p>
                         </div>
-                        <div class="stat-row">
-                            <span>正确率</span>
-                            <strong id="accuracy">0%</strong>
+                        <div class="stat-item">
+                            <h4 id="focusTime">0</h4>
+                            <p>专注时长(分)</p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+        
+        <!-- 每日打卡 -->
+        <section id="checkin" class="content-section">
+            <div class="card">
+                <h2><span class="icon">✅</span>今日打卡</h2>
+                <div class="checkin-grid" id="checkinGrid">
+                    <div class="checkin-item" data-task="word" onclick="toggleCheckin(this)">
+                        <div class="check-icon"></div>
+                        <h4>单词记忆</h4>
+                        <p>1小时</p>
+                    </div>
+                    <div class="checkin-item" data-task="listening" onclick="toggleCheckin(this)">
+                        <div class="check-icon"></div>
+                        <h4>听力训练</h4>
+                        <p>1小时</p>
+                    </div>
+                    <div class="checkin-item" data-task="writing" onclick="toggleCheckin(this)">
+                        <div class="check-icon"></div>
+                        <h4>写作练习</h4>
+                        <p>1小时</p>
+                    </div>
+                    <div class="checkin-item" data-task="review" onclick="toggleCheckin(this)">
+                        <div class="check-icon"></div>
+                        <h4>错题复习</h4>
+                        <p>1小时</p>
+                    </div>
+                </div>
                 
-                <div class="card stats-card">
-                    <h3>📕 错题本 <span style="font-size:0.85rem;color:#dc2626;" id="wrongCount">(0)</span></h3>
-                    <div class="wrong-list" id="wrongList"></div>
-                    <button class="btn btn-secondary" style="margin-top:12px;width:100%;" onclick="clearWrong()">清空错题</button>
+                <div class="checkin-calendar">
+                    <h3>📅 本月打卡日历</h3>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- 动态生成 -->
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+        
+        <!-- 错题本 -->
+        <section id="errors" class="content-section">
+            <div class="card">
+                <h2><span class="icon">➕</span>添加错题</h2>
+                <form class="add-error-form" onsubmit="addError(event)">
+                    <div class="form-group">
+                        <label>科目</label>
+                        <select id="errorSubject" required>
+                            <option value="13162">13162 英语写作</option>
+                            <option value="13129">13129 英汉互译</option>
+                            <option value="15040">15040 新思想</option>
+                            <option value="15043">15043 近代史</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>题目/问题</label>
+                        <textarea id="errorQuestion" placeholder="输入题目或问题描述..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>你的答案/错误思路</label>
+                        <textarea id="errorWrong" placeholder="你当时是怎么想的..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>正确答案/解析</label>
+                        <textarea id="errorCorrect" placeholder="正确答案是什么，为什么..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加错题</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2><span class="icon">❌</span>我的错题</h2>
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterErrors('all')">全部</button>
+                    <button class="filter-btn" onclick="filterErrors('13162')">英语写作</button>
+                    <button class="filter-btn" onclick="filterErrors('13129')">英汉互译</button>
+                    <button class="filter-btn" onclick="filterErrors('15040')">新思想</button>
+                    <button class="filter-btn" onclick="filterErrors('15043')">近代史</button>
+                    <button class="filter-btn" onclick="filterErrors('unreviewed')">待复习</button>
+                </div>
+                <div id="errorsList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- 单词本 -->
+        <section id="words" class="content-section">
+            <div class="card">
+                <h2><span class="icon">➕</span>添加单词</h2>
+                <form class="add-error-form" onsubmit="addWord(event)">
+                    <div class="form-group">
+                        <label>单词</label>
+                        <input type="text" id="wordText" placeholder="输入单词..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>音标</label>
+                        <input type="text" id="wordPhonetic" placeholder="/音标/ (可选)">
+                    </div>
+                    <div class="form-group">
+                        <label>释义</label>
+                        <textarea id="wordMeaning" placeholder="中文释义..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>例句</label>
+                        <textarea id="wordExample" placeholder="例句 (可选)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加单词</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2><span class="icon">📖</span>我的单词本</h2>
+                <div class="word-search">
+                    <input type="text" id="wordSearch" placeholder="搜索单词..." oninput="searchWords()">
+                    <button class="btn btn-secondary" onclick="toggleAllMeanings()">显示/隐藏全部</button>
+                </div>
+                <div id="wordsList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- 作文素材 -->
+        <section id="materials" class="content-section">
+            <div class="card">
+                <h2><span class="icon">➕</span>添加素材</h2>
+                <form class="add-error-form" onsubmit="addMaterial(event)">
+                    <div class="form-group">
+                        <label>分类</label>
+                        <select id="materialCategory" required>
+                            <option value="好词好句">好词好句</option>
+                            <option value="万能开头">万能开头</option>
+                            <option value="万能结尾">万能结尾</option>
+                            <option value="过渡句">过渡句</option>
+                            <option value="论证素材">论证素材</option>
+                            <option value="名人名言">名人名言</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>素材内容</label>
+                        <textarea id="materialContent" placeholder="输入素材内容..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>适用主题</label>
+                        <input type="text" id="materialTopics" placeholder="如：环保、科技、教育 (用逗号分隔)">
+                    </div>
+                    <div class="form-group">
+                        <label>个人笔记</label>
+                        <textarea id="materialNote" placeholder="怎么用，什么时候用..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加素材</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h2><span class="icon">✍️</span>我的素材库</h2>
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterMaterials('all')">全部</button>
+                    <button class="filter-btn" onclick="filterMaterials('好词好句')">好词好句</button>
+                    <button class="filter-btn" onclick="filterMaterials('万能开头')">万能开头</button>
+                    <button class="filter-btn" onclick="filterMaterials('万能结尾')">万能结尾</button>
+                    <button class="filter-btn" onclick="filterMaterials('过渡句')">过渡句</button>
+                    <button class="filter-btn" onclick="filterMaterials('论证素材')">论证素材</button>
+                    <button class="filter-btn" onclick="filterMaterials('名人名言')">名人名言</button>
+                </div>
+                <div id="materialsList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </section>
     </div>
-
-<script>
-// ==================== 数据库 ====================
-
-// 翻译题库
-const transDB = {
-    sentence: {
-        name: "句式结构",
-        items: [
-            { chinese: "只有在经历了无数次失败之后，他才意识到成功并非一蹴而就。", english: "Only after experiencing countless failures did he realize that success does not come overnight.", tip: "'Only + 状语'置于句首引起部分倒装，助动词did提前。", analysis: ["'Only after...' 置于句首，主句需要倒装：did he realize","'经历了' 译为 experiencing","'无数次失败' 译为 countless failures","'一蹴而就' 译为 come overnight"], errors: ["忘记倒装：Only after... he realized","时态错误：does he realize"], hint: "使用'Only after...'开头，后面主句要倒装。'一蹴而就'可以意译为'come overnight'。", keyPoints: ["倒装结构","时间状语","成语意译"], exam: "13129" },
-            { chinese: "这个问题如此复杂，以至于没有专家能够轻易解决它。", english: "So complex is the problem that no expert can solve it easily.", tip: "'So...that...'结构中So置于句首引起倒装。", analysis: ["'So + 形容词' 置于句首引起倒装","正常语序：The problem is so complex that...","'如此...以至于' 译为 so...that..."], errors: ["倒装错误：So complex the problem is","混淆so/such"], hint: "'So + 形容词'放句首要倒装，把be动词提前。", keyPoints: ["So...that倒装","程度表达"], exam: "13129" },
-            { chinese: "不仅他对这个项目感兴趣，他的同事们也表现出了极大的热情。", english: "Not only is he interested in this project, but his colleagues also show great enthusiasm.", tip: "'Not only...but (also)...'结构中，Not only置于句首引起部分倒装。", analysis: ["'Not only' 置于句首引起倒装","'but also' also放在主语后","'表现出热情' 译为 show enthusiasm"], errors: ["倒装错误：Not only he is interested","also位置错误"], hint: "'Not only'开头要倒装，把is提前。also放在主语后面。", keyPoints: ["Not only倒装","并列结构"], exam: "13129" },
-            { chinese: "尽管天气恶劣，他们还是按时完成了任务。", english: "Terrible as the weather was, they still managed to complete the task on time.", tip: "让步状语从句的倒装：形容词 + as/though + 主语 + 动词。", analysis: ["'形容词 + as + 主语 + be' 是让步倒装结构","'按时完成' 译为 complete on time","'manage to' 表示'设法做到'"], errors: ["冠词错误：A terrible as","despite用法错误"], hint: "用'形容词 + as + 主语 + was'的结构表示让步。", keyPoints: ["让步倒装","as/though用法"], exam: "13129" }
-        ]
-    },
-    tense: {
-        name: "时态语态",
-        items: [
-            { chinese: "到去年年底，我们已经完成了三个重大项目。", english: "By the end of last year, we had completed three major projects.", tip: "'by + 过去时间'是过去完成时的标志。", analysis: ["'By the end of last year' 是过去完成时标志","过去完成时：had + 过去分词","表示'过去的过去'"], errors: ["时态错误：we have completed","时态错误：we completed"], hint: "'By the end of + 过去时间'要用过去完成时had done。", keyPoints: ["过去完成时","by的用法"], exam: "13129" },
-            { chinese: "据说这座古庙建于唐朝。", english: "It is said that this ancient temple was built in the Tang Dynasty.", tip: "'据说'常用It is said that...结构。", analysis: ["'据说' 译为 It is said that...","'建于' 是被动语态：was built","'唐朝' 译为 the Tang Dynasty"], errors: ["语态错误：was build","冠词遗漏：in Tang Dynasty"], hint: "用'It is said that...'结构，从句里用被动语态was built。", keyPoints: ["被动语态","It is said结构"], exam: "13129" },
-            { chinese: "如果我当时听了你的建议，就不会犯这么严重的错误了。", english: "If I had taken your advice, I wouldn't have made such a serious mistake.", tip: "与过去事实相反的虚拟语气。", analysis: ["与过去事实相反的虚拟语气","if从句：had + 过去分词","主句：would + have + 过去分词"], errors: ["时态错误：If I took your advice","时态错误：I wouldn't make"], hint: "与过去事实相反，if从句用had done，主句用would have done。", keyPoints: ["虚拟语气","take advice"], exam: "13129" },
-            { chinese: "这本书已经被翻译成多种语言，深受世界各地读者的喜爱。", english: "This book has been translated into many languages and is well received by readers around the world.", tip: "现在完成时的被动语态。", analysis: ["'已经被翻译' 用现在完成时被动：has been translated","'深受喜爱' 译为 is well received"], errors: ["时态错误：was translated","介词错误：translated to"], hint: "'已经被翻译'用现在完成时被动has been translated into。", keyPoints: ["现在完成时被动","translate into"], exam: "13129" }
-        ]
-    },
-    clause: {
-        name: "从句翻译",
-        items: [
-            { chinese: "他所说的与所做的完全不一致。", english: "What he said is completely inconsistent with what he did.", tip: "what引导的名词性从句。", analysis: ["'What he said' what引导主语从句","'what he did' what引导宾语从句","'与...不一致' 译为 be inconsistent with"], errors: ["连接词错误：That he said","介词错误：inconsistent to"], hint: "用what引导从句表示'所...的'。", keyPoints: ["what从句","inconsistent with"], exam: "13129" },
-            { chinese: "这就是他拒绝接受那份工作的原因。", english: "This is why he refused to take that job.", tip: "why引导的表语从句。", analysis: ["'This is why...' why引导表语从句","'拒绝接受' 译为 refuse to take"], errors: ["连接词错误：This is because"], hint: "用'This is why...'表示'这就是...的原因'。", keyPoints: ["why表语从句","refuse to do"], exam: "13129" },
-            { chinese: "无论遇到什么困难，我们都不会放弃。", english: "Whatever difficulties we may encounter, we will never give up.", tip: "whatever引导让步状语从句。", analysis: ["'Whatever' 引导让步状语从句","'遇到困难' 译为 encounter difficulties"], errors: ["结构错误：Whatever difficult"], hint: "用'Whatever difficulties'引导让步从句。", keyPoints: ["whatever从句","encounter"], exam: "13129" },
-            { chinese: "只要你努力，就一定能成功。", english: "As long as you work hard, you are bound to succeed.", tip: "as long as引导条件状语从句。", analysis: ["'As long as' 引导条件状语从句","'一定能' 译为 are bound to"], errors: ["结构错误：As long as you will work"], hint: "用'As long as'引导条件从句，从句用一般现在时。", keyPoints: ["as long as","be bound to"], exam: "13129" }
-        ]
-    },
-    rhetoric: {
-        name: "修辞表达",
-        items: [
-            { chinese: "时间如白驹过隙，转眼间十年过去了。", english: "Time flies like a white steed passing a crack, and ten years have passed in the twinkling of an eye.", tip: "中文成语的直译与意译结合。", analysis: ["'白驹过隙' 直译保留意象","'转眼间' 译为 in the twinkling of an eye"], errors: ["直译错误：white horse past gap"], hint: "'白驹过隙'可以直译保留意象。", keyPoints: ["成语翻译","修辞保留"], exam: "13162" },
-            { chinese: "这个问题说起来容易做起来难。", english: "This problem is easier said than done.", tip: "英语习语'easier said than done'。", analysis: ["'easier said than done' 是英语习语"], errors: ["中式英语：say easy do hard"], hint: "直接用英语习语'easier said than done'。", keyPoints: ["习语运用","地道表达"], exam: "13162" },
-            { chinese: "他像热锅上的蚂蚁一样坐立不安。", english: "He was as restless as a cat on hot bricks.", tip: "中英习语意象不同。", analysis: ["中文：热锅上的蚂蚁","英文对应：a cat on hot bricks"], errors: ["直译错误：ant on hot pot"], hint: "不要直译，英语对应说法是'a cat on hot bricks'。", keyPoints: ["习语对应","文化差异"], exam: "13162" }
-        ]
-    },
-    idiom: {
-        name: "习语成语",
-        items: [
-            { chinese: "我们必须全力以赴，才能按时完成这个项目。", english: "We must go all out to complete this project on time.", tip: "'全力以赴'译为go all out。", analysis: ["'全力以赴' 译为 go all out","'按时' 译为 on time"], errors: ["中式英语：use all our strength"], hint: "'全力以赴'用习语'go all out'。", keyPoints: ["习语运用","go all out"], exam: "13162" },
-            { chinese: "他对这个计划不置可否，保持沉默。", english: "He remained noncommittal about the plan and kept silent.", tip: "'不置可否'译为noncommittal。", analysis: ["'不置可否' 译为 noncommittal","'保持沉默' 译为 keep silent"], errors: ["中式英语：not say yes or no"], hint: "'不置可否'用形容词noncommittal。", keyPoints: ["noncommittal","keep silent"], exam: "13162" },
-            { chinese: "这件事终于水落石出了。", english: "The truth about this matter has finally come to light.", tip: "'水落石出'译为come to light。", analysis: ["'水落石出' 译为 come to light"], errors: ["直译错误：water fell and stone came out"], hint: "'水落石出'意译为'真相大白'，用'come to light'。", keyPoints: ["意译","come to light"], exam: "13162" }
-        ]
-    },
-    culture: {
-        name: "文化负载",
-        items: [
-            { chinese: "春节是中国最重要的传统节日。", english: "The Spring Festival is the most important traditional festival in China.", tip: "文化专有名词的翻译。", analysis: ["'春节' 译为 the Spring Festival","'最重要的' 译为 the most important"], errors: ["大小写错误：spring festival","冠词遗漏"], hint: "'春节'是the Spring Festival，注意加the和大写。", keyPoints: ["专有名词","冠词使用"], exam: "13129" },
-            { chinese: "中秋节人们会吃月饼、赏月。", english: "On the Mid-Autumn Festival, people eat mooncakes and admire the full moon.", tip: "节日表达用介词on。", analysis: ["节日用介词on","'月饼' 译为 mooncakes","'赏月' 译为 admire the moon"], errors: ["介词错误：In the Mid-Autumn Festival"], hint: "节日用on，'月饼'是mooncakes，'赏月'用admire the moon。", keyPoints: ["节日介词","mooncake"], exam: "13129" },
-            { chinese: "长城是世界七大奇迹之一。", english: "The Great Wall is one of the seven wonders of the world.", tip: "'七大奇迹'是seven wonders。", analysis: ["'长城' 译为 the Great Wall","'one of + 复数名词' 是固定结构"], errors: ["冠词遗漏","单复数错误"], hint: "'长城'是the Great Wall，用'one of + 复数'结构。", keyPoints: ["专有名词","one of结构"], exam: "13129" }
-        ]
-    },
-    writing: {
-        name: "写作句型",
-        items: [
-            { chinese: "随着科技的发展，人们的生活方式发生了巨大变化。", english: "With the development of science and technology, people's lifestyles have undergone tremendous changes.", tip: "'随着...'常用With...开头。", analysis: ["'随着...' 译为 With...","'发生巨大变化' 译为 have undergone tremendous changes"], errors: ["结构错误：With technology develops"], hint: "用'With the development of...'开头。", keyPoints: ["With结构","undergo changes"], exam: "13162" },
-            { chinese: "综上所述，我们可以得出结论：环境保护刻不容缓。", english: "In conclusion, we can draw the conclusion that environmental protection is of great urgency.", tip: "结论段经典句型。", analysis: ["'综上所述' 译为 In conclusion","'得出结论' 译为 draw the conclusion"], errors: ["中式英语：According to above"], hint: "用'In conclusion'开头，'得出结论'是draw the conclusion。", keyPoints: ["结论句型","draw conclusion"], exam: "13162" }
-        ]
-    }
-};
-
-// 15040 新思想题库
-const quiz15040 = [
-    { id: 1, type: '单选', question: '在"四个全面"战略布局中居于引领地位的是？', options: ['A.全面深化改革','B.全面从严治党','C.全面依法治国','D.全面建设社会主义现代化国家'], answer: 'D', analysis: '全面建设社会主义现代化国家是战略目标，在"四个全面"中居于引领地位。' },
-    { id: 2, type: '单选', question: '中国式现代化建设的出发点和落脚点是？', options: ['A.农轻重协调发展','B.实现人民对美好生活的向往','C.科技跨越式发展','D.独立自主'], answer: 'B', analysis: '必须把实现人民对美好生活的向往作为现代化建设的出发点和落脚点。' },
-    { id: 3, type: '单选', question: '中国特色社会主义最本质的特征是？', options: ['A.中国共产党领导','B.以公有制为主体','C.按劳分配','D.人民民主专政'], answer: 'A', analysis: '习近平指出，中国特色社会主义最本质的特征是中国共产党领导。' },
-    { id: 4, type: '单选', question: '党执政的最大底气是？', options: ['A.人民','B.军队','C.经济实力','D.制度优势'], answer: 'A', analysis: '人民是党执政的最大底气，也是党执政最深厚的根基。' },
-    { id: 5, type: '单选', question: '新时代坚持和发展中国特色社会主义的根本动力是？', options: ['A.改革开放','B.科技创新','C.从严治党','D.共同富裕'], answer: 'A', analysis: '改革开放是决定当代中国命运的关键一招。' },
-    { id: 6, type: '简答', question: '怎样深刻领悟"两个确立"的决定性意义？', answer: '"两个确立"是党在新时代取得的重大政治成果，对新时代党和国家事业发展、对推进中华民族伟大复兴历史进程具有决定性意义。', analysis: '核心考点：确立习近平同志党中央的核心、全党的核心地位；确立习近平新时代中国特色社会主义思想的指导地位。' },
-    { id: 7, type: '简答', question: '简述中国式现代化的中国特色。', answer: '①人口规模巨大的现代化；②全体人民共同富裕的现代化；③物质文明和精神文明相协调的现代化；④人与自然和谐共生的现代化；⑤走和平发展道路的现代化。', analysis: '必须深刻理解五个特征，常考简答/论述。' },
-    { id: 8, type: '简答', question: '简述全过程人民民主的内涵。', answer: '全过程人民民主是社会主义民主政治的本质属性，是全链条、全方位、全覆盖的民主，是最广泛、最真实、最管用的社会主义民主。', analysis: '包括民主选举、民主协商、民主决策、民主管理、民主监督等环节。' }
-];
-
-// 15043 近代史题库
-const quiz15043 = [
-    { id: 1, type: '单选', question: '太平天国运动后期，提出《资政新篇》的人物是？', options: ['A.洪秀全','B.杨秀清','C.洪仁玕','D.石达开'], answer: 'C', analysis: '洪仁玕提出的《资政新篇》是近代中国最早的发展资本主义的方案。' },
-    { id: 2, type: '单选', question: '新文化运动兴起的标志是？', options: ['A.《新青年》创刊','B.五四运动','C.北京大学改革','D.文学革命'], answer: 'A', analysis: '1915年陈独秀在上海创办《青年杂志》(后改名《新青年》)，新文化运动开始。' },
-    { id: 3, type: '单选', question: '中国共产党第一次明确提出反帝反封建民主革命纲领的会议是？', options: ['A.中共一大','B.中共二大','C.中共三大','D.遵义会议'], answer: 'B', analysis: '中共二大制定了最低纲领(反帝反封建)和最高纲领。' },
-    { id: 4, type: '单选', question: '抗日战争全面爆发的标志是？', options: ['A.九一八事变','B.华北事变','C.卢沟桥事变','D.八一三事变'], answer: 'C', analysis: '1937年7月7日卢沟桥事变，全面抗战爆发。' },
-    { id: 5, type: '单选', question: '中国近代史上第一个不平等条约是？', options: ['A.《南京条约》','B.《北京条约》','C.《马关条约》','D.《辛丑条约》'], answer: 'A', analysis: '1842年《南京条约》。' },
-    { id: 6, type: '简答', question: '简述洋务运动的历史作用。', answer: '洋务运动是中国近代化的开端，引进了西方先进技术，培养了近代人才，客观上促进了中国民族资本主义的产生。', analysis: '注意区分积极作用和局限性。' },
-    { id: 7, type: '简答', question: '简述辛亥革命的历史意义。', answer: '辛亥革命推翻了清王朝统治，结束了中国两千多年的封建君主专制制度，建立了资产阶级共和国，使民主共和观念深入人心。', analysis: '注意答出"推翻帝制"、"建立共和"、"思想解放"三个层面。' },
-    { id: 8, type: '简答', question: '简述五四运动的历史特点。', answer: '五四运动是一次彻底的反帝反封建的革命运动；是一场真正的群众运动；促进了马克思主义在中国的传播。', analysis: '核心：彻底性、群众性、思想启蒙性。' }
-];
-
-// ==================== 状态管理 ====================
-let currentModule = 'translation';
-let currentTransCategory = 'all';
-let currentTrans = null;
-let currentQ15040 = null;
-let currentQ15043 = null;
-let stats = { total: 0, correct: 0, today: 0, wrong: [] };
-
-// ==================== 初始化 ====================
-function init() {
-    updateCountdown();
-    loadStats();
-    setupEventListeners();
-    nextTranslation();
-    updateStats();
-}
-
-function updateCountdown() {
-    const examDate = new Date('2026-04-11');
-    const today = new Date();
-    const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
-    document.getElementById('countdown').textContent = diff > 0 ? diff : 0;
-}
-
-function loadStats() {
-    try {
-        const saved = localStorage.getItem('examStats');
-        if (saved) stats = JSON.parse(saved);
-    } catch(e) {}
-}
-
-function saveStats() {
-    try {
-        localStorage.setItem('examStats', JSON.stringify(stats));
-    } catch(e) {}
-    updateStats();
-}
-
-function updateStats() {
-    document.getElementById('todayCount').textContent = stats.today;
-    document.getElementById('totalCount').textContent = stats.total;
-    document.getElementById('accuracy').textContent = stats.total > 0 ? Math.round(stats.correct/stats.total*100) + '%' : '0%';
-    document.getElementById('wrongCount').textContent = '(' + stats.wrong.length + ')';
     
-    const wrongList = document.getElementById('wrongList');
-    wrongList.innerHTML = stats.wrong.slice(-5).map(w => `<div class="wrong-item">${w}</div>`).join('');
-}
+    <script>
+        // ========== 数据存储 ==========
+        const Storage = {
+            get(key, defaultValue = []) {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            },
+            set(key, value) {
+                localStorage.setItem(key, JSON.stringify(value));
+            }
+        };
 
-// ==================== 事件监听 ====================
-function setupEventListeners() {
-    // Module切换
-    document.querySelectorAll('.module-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentModule = btn.dataset.module;
-            switchModule();
+        // ========== 倒计时 ==========
+        function updateCountdown() {
+            const examDate = new Date('2026-04-11T09:00:00');
+            const now = new Date();
+            const diff = examDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '0';
+                document.getElementById('minutes').textContent = '0';
+                document.getElementById('seconds').textContent = '0';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // ========== 导航切换 ==========
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (sectionId === 'home') updateHomeStats();
+            if (sectionId === 'checkin') updateCalendar();
+            if (sectionId === 'errors') renderErrors();
+            if (sectionId === 'words') renderWords();
+            if (sectionId === 'materials') renderMaterials();
+        }
+
+        // ========== 番茄钟 ==========
+        let timerInterval = null;
+        let timeLeft = 25 * 60;
+        let isRunning = false;
+        let currentMode = 25;
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function setPomodoroMode(minutes) {
+            currentMode = minutes;
+            timeLeft = minutes * 60;
+            document.getElementById('timer').textContent = formatTime(timeLeft);
+            document.getElementById('timer').classList.toggle('break', minutes < 25);
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.includes(minutes)) btn.classList.add('active');
+            });
+            
+            pauseTimer();
+        }
+
+        function startTimer() {
+            if (isRunning) return;
+            isRunning = true;
+            document.getElementById('startBtn').textContent = '进行中...';
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = formatTime(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    completePomodoro();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('startBtn').textContent = '开始';
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeLeft = currentMode * 60;
+            document.getElementById('timer').textContent = formatTime(timeLeft);
+        }
+
+        function completePomodoro() {
+            pauseTimer();
+            
+            if (currentMode === 25) {
+                const stats = Storage.get('pomodoroStats', { today: 0, total: 0, todayTime: 0 });
+                const today = new Date().toDateString();
+                
+                if (stats.date !== today) {
+                    stats.today = 0;
+                    stats.todayTime = 0;
+                    stats.date = today;
+                }
+                
+                stats.today++;
+                stats.total++;
+                stats.todayTime += 25;
+                Storage.set('pomodoroStats', stats);
+                
+                alert('🎉 完成一个番茄钟！休息一下吧~');
+                updatePomodoroStats();
+            } else {
+                alert('休息结束，准备开始新的专注！');
+            }
+            
+            resetTimer();
+        }
+
+        function updatePomodoroStats() {
+            const stats = Storage.get('pomodoroStats', { today: 0, total: 0, todayTime: 0 });
+            document.getElementById('todayPomos').textContent = stats.today || 0;
+            document.getElementById('totalPomos').textContent = stats.total || 0;
+            document.getElementById('focusTime').textContent = stats.todayTime || 0;
+        }
+
+        // ========== 每日打卡 ==========
+        const checkinTasks = [
+            { id: 'word', name: '单词记忆', duration: '1小时' },
+            { id: 'listening', name: '听力训练', duration: '1小时' },
+            { id: 'writing', name: '写作练习', duration: '1小时' },
+            { id: 'review', name: '错题复习', duration: '1小时' }
+        ];
+
+        function toggleCheckin(element) {
+            const taskId = element.dataset.task;
+            const today = new Date().toDateString();
+            let checkins = Storage.get('checkins', {});
+            
+            if (!checkins[today]) checkins[today] = [];
+            
+            const index = checkins[today].indexOf(taskId);
+            if (index > -1) {
+                checkins[today].splice(index, 1);
+                element.classList.remove('completed');
+            } else {
+                checkins[today].push(taskId);
+                element.classList.add('completed');
+            }
+            
+            Storage.set('checkins', checkins);
+            updateHomeStats();
+            updateCalendar();
+        }
+
+        function updateCheckinDisplay() {
+            const today = new Date().toDateString();
+            const checkins = Storage.get('checkins', {});
+            const todayCheckins = checkins[today] || [];
+            
+            document.querySelectorAll('.checkin-item').forEach(item => {
+                const taskId = item.dataset.task;
+                if (todayCheckins.includes(taskId)) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+        }
+
+        function updateCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const checkins = Storage.get('checkins', {});
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            grid.innerHTML = '';
+            
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            weekDays.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                div.textContent = day;
+                div.style.fontWeight = 'bold';
+                grid.appendChild(div);
+            });
+            
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = new Date(year, month, day).toDateString();
+                const dayCheckins = checkins[dateStr] || [];
+                const isToday = day === now.getDate();
+                
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                if (dayCheckins.length > 0) div.classList.add('checked');
+                if (isToday) div.classList.add('today');
+                div.textContent = day;
+                div.title = `${dayCheckins.length}/4 项完成`;
+                
+                grid.appendChild(div);
+            }
+        }
+
+        function calculateStreak() {
+            const checkins = Storage.get('checkins', {});
+            const dates = Object.keys(checkins).filter(d => checkins[d].length > 0).sort();
+            
+            if (dates.length === 0) return 0;
+            
+            let streak = 0;
+            const today = new Date();
+            
+            for (let i = 0; i < 365; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toDateString();
+                
+                if (checkins[dateStr] && checkins[dateStr].length > 0) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // ========== 错题本 ==========
+        let currentErrorFilter = 'all';
+
+        function addError(event) {
+            event.preventDefault();
+            
+            const error = {
+                id: Date.now(),
+                subject: document.getElementById('errorSubject').value,
+                subjectName: document.getElementById('errorSubject').selectedOptions[0].text,
+                question: document.getElementById('errorQuestion').value,
+                wrong: document.getElementById('errorWrong').value,
+                correct: document.getElementById('errorCorrect').value,
+                date: new Date().toISOString(),
+                reviewed: false
+            };
+            
+            const errors = Storage.get('errors', []);
+            errors.unshift(error);
+            Storage.set('errors', errors);
+            
+            event.target.reset();
+            renderErrors();
+            alert('✅ 错题已添加！');
+        }
+
+        function renderErrors() {
+            const errors = Storage.get('errors', []);
+            const container = document.getElementById('errorsList');
+            
+            let filtered = errors;
+            if (currentErrorFilter !== 'all') {
+                if (currentErrorFilter === 'unreviewed') {
+                    filtered = errors.filter(e => !e.reviewed);
+                } else {
+                    filtered = errors.filter(e => e.subject === currentErrorFilter);
+                }
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px;">暂无错题，继续加油！💪</p>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(e => `
+                <div class="error-item ${e.reviewed ? 'reviewed' : ''}">
+                    <div class="error-header">
+                        <span class="error-subject">${e.subjectName}</span>
+                        <div class="error-actions">
+                            <button class="icon-btn" onclick="toggleReviewed(${e.id})" title="${e.reviewed ? '标记为未复习' : '标记为已复习'}">
+                                ${e.reviewed ? '✅' : '⭕'}
+                            </button>
+                            <button class="icon-btn" onclick="deleteError(${e.id})" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                    <p><strong>题目：</strong>${e.question}</p>
+                    <p style="color:var(--danger);margin-top:8px;"><strong>错解：</strong>${e.wrong}</p>
+                    <p style="color:var(--success);margin-top:8px;"><strong>正解：</strong>${e.correct}</p>
+                    <p style="color:var(--text-light);font-size:0.85em;margin-top:10px;">
+                        添加时间：${new Date(e.date).toLocaleDateString()}
+                    </p>
+                </div>
+            `).join('');
+        }
+
+        function filterErrors(filter) {
+            currentErrorFilter = filter;
+            document.querySelectorAll('#errors .filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderErrors();
+        }
+
+        function toggleReviewed(id) {
+            const errors = Storage.get('errors', []);
+            const error = errors.find(e => e.id === id);
+            if (error) {
+                error.reviewed = !error.reviewed;
+                Storage.set('errors', errors);
+                renderErrors();
+            }
+        }
+
+        function deleteError(id) {
+            if (!confirm('确定删除这道错题吗？')) return;
+            const errors = Storage.get('errors', []).filter(e => e.id !== id);
+            Storage.set('errors', errors);
+            renderErrors();
+        }
+
+        // ========== 单词本 ==========
+        let showAllMeanings = false;
+
+        function addWord(event) {
+            event.preventDefault();
+            
+            const word = {
+                id: Date.now(),
+                text: document.getElementById('wordText').value,
+                phonetic: document.getElementById('wordPhonetic').value,
+                meaning: document.getElementById('wordMeaning').value,
+                example: document.getElementById('wordExample').value,
+                date: new Date().toISOString()
+            };
+            
+            const words = Storage.get('words', []);
+            words.unshift(word);
+            Storage.set('words', words);
+            
+            event.target.reset();
+            renderWords();
+            alert('✅ 单词已添加！');
+        }
+
+        function renderWords(searchTerm = '') {
+            let words = Storage.get('words', []);
+            
+            if (searchTerm) {
+                words = words.filter(w => 
+                    w.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    w.meaning.includes(searchTerm)
+                );
+            }
+            
+            const container = document.getElementById('wordsList');
+            
+            if (words.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px;">暂无单词，开始添加吧！📚</p>';
+                return;
+            }
+            
+            container.innerHTML = words.map(w => `
+                <div class="word-card">
+                    <div class="word-header">
+                        <div>
+                            <div class="word-title">${w.text}</div>
+                            ${w.phonetic ? `<div class="word-phonetic">${w.phonetic}</div>` : ''}
+                        </div>
+                        <div class="error-actions">
+                            <button class="icon-btn" onclick="toggleWordMeaning(this)" title="显示/隐藏释义">👁️</button>
+                            <button class="icon-btn" onclick="deleteWord(${w.id})" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="word-meaning ${showAllMeanings ? '' : 'hidden'}">
+                        ${w.meaning}
+                        ${w.example ? `<p style="margin-top:10px;color:var(--text-light);font-style:italic;">"${w.example}"</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleWordMeaning(btn) {
+            const meaning = btn.closest('.word-card').querySelector('.word-meaning');
+            meaning.classList.toggle('hidden');
+        }
+
+        function toggleAllMeanings() {
+            showAllMeanings = !showAllMeanings;
+            searchWords();
+        }
+
+        function searchWords() {
+            const term = document.getElementById('wordSearch').value;
+            renderWords(term);
+        }
+
+        function deleteWord(id) {
+            if (!confirm('确定删除这个单词吗？')) return;
+            const words = Storage.get('words', []).filter(w => w.id !== id);
+            Storage.set('words', words);
+            searchWords();
+        }
+
+        // ========== 作文素材 ==========
+        let currentMaterialFilter = 'all';
+
+        function addMaterial(event) {
+            event.preventDefault();
+            
+            const material = {
+                id: Date.now(),
+                category: document.getElementById('materialCategory').value,
+                content: document.getElementById('materialContent').value,
+                topics: document.getElementById('materialTopics').value,
+                note: document.getElementById('materialNote').value,
+                date: new Date().toISOString()
+            };
+            
+            const materials = Storage.get('materials', []);
+            materials.unshift(material);
+            Storage.set('materials', materials);
+            
+            event.target.reset();
+            renderMaterials();
+            alert('✅ 素材已添加！');
+        }
+
+        function renderMaterials() {
+            const materials = Storage.get('materials', []);
+            const container = document.getElementById('materialsList');
+            
+            let filtered = materials;
+            if (currentMaterialFilter !== 'all') {
+                filtered = materials.filter(m => m.category === currentMaterialFilter);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px;">暂无素材，开始积累吧！✍️</p>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(m => `
+                <div class="material-item">
+                    <div class="material-header">
+                        <span class="material-category">${m.category}</span>
+                        <div class="error-actions">
+                            <button class="icon-btn" onclick="deleteMaterial(${m.id})" title="删除">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="material-content">${m.content}</div>
+                    ${m.topics ? `<p style="margin-top:10px;"><strong>适用主题：</strong>${m.topics}</p>` : ''}
+                    ${m.note ? `<div class="material-note">💡 ${m.note}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function filterMaterials(filter) {
+            currentMaterialFilter = filter;
+            document.querySelectorAll('#materials .filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMaterials();
+        }
+
+        function deleteMaterial(id) {
+            if (!confirm('确定删除这个素材吗？')) return;
+            const materials = Storage.get('materials', []).filter(m => m.id !== id);
+            Storage.set('materials', materials);
+            renderMaterials();
+        }
+
+        // ========== 首页统计 ==========
+        function updateHomeStats() {
+            const today = new Date().toDateString();
+            const checkins = Storage.get('checkins', {});
+            const todayCheckins = checkins[today] || [];
+            const pomodoroStats = Storage.get('pomodoroStats', { todayTime: 0 });
+            
+            document.getElementById('todayStudy').textContent = (pomodoroStats.todayTime || 0);
+            document.getElementById('totalStudy').textContent = ((pomodoroStats.total || 0) * 25 / 60).toFixed(1);
+            document.getElementById('todayCheckin').textContent = `${todayCheckins.length}/4`;
+            document.getElementById('streakDays').textContent = calculateStreak();
+            
+            // 各科进度
+            const errors = Storage.get('errors', []);
+            const reviewedCount = errors.filter(e => e.reviewed).length;
+            const progressHtml = `
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>错题复习进度</span>
+                        <span>${reviewedCount}/${errors.length}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${errors.length ? (reviewedCount/errors.length*100) : 0}%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span>今日打卡</span>
+                        <span>${todayCheckins.length}/4</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${todayCheckins.length/4*100}%"></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('subjectProgress').innerHTML = progressHtml;
+            
+            // 今日任务
+            const tasksHtml = checkinTasks.map(task => {
+                const completed = todayCheckins.includes(task.id);
+                return `
+                    <div class="checkin-item ${completed ? 'completed' : ''}" data-task="${task.id}" onclick="toggleCheckin(this);updateHomeStats();">
+                        <div class="check-icon"></div>
+                        <h4>${task.name}</h4>
+                        <p>${task.duration}</p>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('todayTasks').innerHTML = tasksHtml;
+        }
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCheckinDisplay();
+            updatePomodoroStats();
+            updateHomeStats();
+            updateCalendar();
+            renderErrors();
+            renderWords();
+            renderMaterials();
         });
-    });
-    
-    // Translation分类
-    document.querySelectorAll('#transCategoryTabs .category-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('#transCategoryTabs .category-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            currentTransCategory = tab.dataset.category;
-            nextTranslation();
-        });
-    });
-    
-    // Quiz模式切换
-    document.querySelectorAll('[data-mode]').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const parent = tab.parentElement;
-            parent.querySelectorAll('.subject-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-        });
-    });
-}
-
-function switchModule() {
-    document.getElementById('translationModule').classList.add('hidden');
-    document.getElementById('quiz15040Module').classList.add('hidden');
-    document.getElementById('quiz15043Module').classList.add('hidden');
-    
-    if (currentModule === 'translation') {
-        document.getElementById('translationModule').classList.remove('hidden');
-        nextTranslation();
-    } else if (currentModule === 'quiz15040') {
-        document.getElementById('quiz15040Module').classList.remove('hidden');
-        nextQ15040();
-    } else if (currentModule === 'quiz15043') {
-        document.getElementById('quiz15043Module').classList.remove('hidden');
-        nextQ15043();
-    }
-}
-
-// ==================== 翻译功能 ====================
-function nextTranslation() {
-    document.getElementById('transInput').value = '';
-    document.getElementById('transResult').classList.add('hidden');
-    
-    let pool = [];
-    if (currentTransCategory === 'all') {
-        Object.values(transDB).forEach(cat => {
-            pool = pool.concat(cat.items.map(s => ({...s, category: cat.name})));
-        });
-    } else if (transDB[currentTransCategory]) {
-        pool = transDB[currentTransCategory].items.map(s => ({...s, category: transDB[currentTransCategory].name}));
-    }
-    
-    if (pool.length === 0) return;
-    currentTrans = pool[Math.floor(Math.random() * pool.length)];
-    
-    document.getElementById('transType').textContent = currentTrans.category;
-    document.getElementById('transExam').textContent = currentTrans.exam + '考点';
-    document.getElementById('chineseSentence').textContent = currentTrans.chinese;
-    document.getElementById('transTipText').textContent = currentTrans.tip;
-    document.getElementById('transKeyPoints').textContent = currentTrans.keyPoints.join(' | ');
-}
-
-function checkTranslation() {
-    const input = document.getElementById('transInput').value.trim();
-    if (!input) { alert('请先输入翻译！'); return; }
-    
-    document.getElementById('transAnswer').textContent = currentTrans.english;
-    document.getElementById('transAnalysis').innerHTML = currentTrans.analysis.map(a => `<div style="margin:6px 0;">• ${a}</div>`).join('');
-    document.getElementById('transErrors').innerHTML = currentTrans.errors.map(e => `<div style="margin:6px 0;color:#dc2626;">✗ ${e}</div>`).join('');
-    document.getElementById('transResult').classList.remove('hidden');
-    
-    stats.total++;
-    stats.today++;
-    saveStats();
-}
-
-function showTransHint() {
-    alert('💡 提示：' + currentTrans.hint);
-}
-
-// ==================== 15040 Quiz ====================
-function nextQ15040() {
-    document.getElementById('qAnalysis15040').classList.add('hidden');
-    document.getElementById('saArea15040').classList.add('hidden');
-    document.getElementById('saText15040').classList.add('hidden');
-    
-    currentQ15040 = quiz15040[Math.floor(Math.random() * quiz15040.length)];
-    
-    document.getElementById('qType15040').textContent = currentQ15040.type + '题';
-    document.getElementById('qText15040').textContent = currentQ15040.question;
-    
-    const optsDiv = document.getElementById('qOptions15040');
-    if (currentQ15040.type === '单选') {
-        optsDiv.classList.remove('hidden');
-        document.getElementById('saArea15040').classList.add('hidden');
-        optsDiv.innerHTML = currentQ15040.options.map((opt, i) => 
-            `<div class="option-item" onclick="selectOption15040('${opt[0]}', this)">
-                <span class="option-prefix">${opt[0]}</span>
-                <span>${opt.substring(2)}</span>
-            </div>`
-        ).join('');
-    } else {
-        optsDiv.classList.add('hidden');
-        document.getElementById('saArea15040').classList.remove('hidden');
-    }
-}
-
-function selectOption15040(answer, el) {
-    document.querySelectorAll('#qOptions15040 .option-item').forEach(item => item.classList.add('disabled-option'));
-    
-    if (answer === currentQ15040.answer) {
-        el.classList.add('correct');
-        stats.correct++;
-    } else {
-        el.classList.add('wrong');
-        stats.wrong.push('15040: ' + currentQ15040.question.substring(0, 20) + '...');
-    }
-    
-    document.getElementById('qAnalysisText15040').textContent = currentQ15040.analysis;
-    document.getElementById('qAnalysis15040').classList.remove('hidden');
-    
-    stats.total++;
-    stats.today++;
-    saveStats();
-}
-
-function showSA15040() {
-    document.getElementById('saText15040').textContent = currentQ15040.answer + '\n\n解析：' + currentQ15040.analysis;
-    document.getElementById('saText15040').classList.remove('hidden');
-    stats.total++;
-    stats.today++;
-    saveStats();
-}
-
-function reset15040() {
-    if (confirm('确定重置15040学习进度？')) {
-        stats.today = 0;
-        saveStats();
-        nextQ15040();
-    }
-}
-
-// ==================== 15043 Quiz ====================
-function nextQ15043() {
-    document.getElementById('qAnalysis15043').classList.add('hidden');
-    document.getElementById('saArea15043').classList.add('hidden');
-    document.getElementById('saText15043').classList.add('hidden');
-    
-    currentQ15043 = quiz15043[Math.floor(Math.random() * quiz15043.length)];
-    
-    document.getElementById('qType15043').textContent = currentQ15043.type + '题';
-    document.getElementById('qText15043').textContent = currentQ15043.question;
-    
-    const optsDiv = document.getElementById('qOptions15043');
-    if (currentQ15043.type === '单选') {
-        optsDiv.classList.remove('hidden');
-        document.getElementById('saArea15043').classList.add('hidden');
-        optsDiv.innerHTML = currentQ15043.options.map((opt, i) => 
-            `<div class="option-item" onclick="selectOption15043('${opt[0]}', this)">
-                <span class="option-prefix">${opt[0]}</span>
-                <span>${opt.substring(2)}</span>
-            </div>`
-        ).join('');
-    } else {
-        optsDiv.classList.add('hidden');
-        document.getElementById('saArea15043').classList.remove('hidden');
-    }
-}
-
-function selectOption15043(answer, el) {
-    document.querySelectorAll('#qOptions15043 .option-item').forEach(item => item.classList.add('disabled-option'));
-    
-    if (answer === currentQ15043.answer) {
-        el.classList.add('correct');
-        stats.correct++;
-    } else {
-        el.classList.add('wrong');
-        stats.wrong.push('15043: ' + currentQ15043.question.substring(0, 20) + '...');
-    }
-    
-    document.getElementById('qAnalysisText15043').textContent = currentQ15043.analysis;
-    document.getElementById('qAnalysis15043').classList.remove('hidden');
-    
-    stats.total++;
-    stats.today++;
-    saveStats();
-}
-
-function showSA15043() {
-    document.getElementById('saText15043').textContent = currentQ15043.answer + '\n\n解析：' + currentQ15043.analysis;
-    document.getElementById('saText15043').classList.remove('hidden');
-    stats.total++;
-    stats.today++;
-    saveStats();
-}
-
-function reset15043() {
-    if (confirm('确定重置15043学习进度？')) {
-        stats.today = 0;
-        saveStats();
-        nextQ15043();
-    }
-}
-
-// ==================== 通用功能 ====================
-function clearWrong() {
-    if (confirm('确定清空所有错题？')) {
-        stats.wrong = [];
-        saveStats();
-    }
-}
-
-// 启动
-init();
-</script>
+    </script>
 </body>
 </html>
