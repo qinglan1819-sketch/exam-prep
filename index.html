@@ -563,10 +563,9 @@ function loadDailyQuestions(subject) {
     let ids = localStorage.getItem(storageKey);
     
     if (!ids) {
-        // 随机选20题（从30题中）
+        // 每日练习：全部30题
         const subjectQs = fullQuestionBank.filter(q => q.subject === subject);
-        const shuffled = [...subjectQs].sort(() => Math.random() - 0.5);
-        const picked = shuffled.slice(0, 20).map(q => q.id);
+        const picked = subjectQs.map(q => q.id);
         localStorage.setItem(storageKey, JSON.stringify(picked));
         return picked;
     }
