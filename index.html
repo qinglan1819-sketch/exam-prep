@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>Annie的14天自考闯关 | 15040+15043</title>
+    <title>Annie的26天自考冲刺 | 15040+15043 | 4月11日考试</title>
     <style>
         * {
             margin: 0;
@@ -383,6 +383,32 @@
 </head>
 <body>
 <div class="app-container">
+    <!-- 倒计时和计划信息 -->
+    <div style="grid-column: 1 / -1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 24px; padding: 24px 32px; color: white; margin-bottom: 0; box-shadow: 0 10px 30px -10px #1e293b40;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <div style="font-size: 2.2rem; font-weight: 800; margin-bottom: 4px;" id="countdownDisplay">26天</div>
+                <div style="font-size: 1rem; opacity: 0.9;">距离4月11日考试</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 4px;" id="studyDayDisplay">第1天</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;" id="phaseDisplay">基础刷题期</div>
+            </div>
+            <div style="text-align: right; max-width: 300px;">
+                <div style="font-size: 0.95rem; opacity: 0.95; line-height: 1.5;" id="phaseDesc">每天练习不同知识点</div>
+            </div>
+        </div>
+        <!-- 进度条 -->
+        <div style="margin-top: 20px; background: rgba(255,255,255,0.2); border-radius: 10px; height: 8px; overflow: hidden;">
+            <div id="progressBar" style="background: #22c55e; height: 100%; width: 4%; transition: width 0.3s;"></div>
+        </div>
+        <div style="margin-top: 8px; font-size: 0.85rem; opacity: 0.85; display: flex; justify-content: space-between;">
+            <span>Day 1</span>
+            <span id="progressText">4%</span>
+            <span>Day 26</span>
+        </div>
+    </div>
+
     <div class="quiz-area">
         <div class="subject-header">
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -435,6 +461,67 @@
 </div>
 
 <script>
+// ==================== 26天复习计划配置 ====================
+const EXAM_DATE = new Date('2026-04-11'); // 考试日期
+const START_DATE = new Date('2026-03-15'); // 复习开始日期
+
+// 26天学习计划
+const STUDY_PLAN = {
+    // 第一阶段：基础刷题 (Day 1-15) - 每天不同题目
+    phase1: {
+        name: '基础刷题期',
+        days: [1, 15],
+        description: '每天练习不同知识点'
+    },
+    // 第二阶段：真题强化 (Day 16-25)  
+    phase2: {
+        name: '真题强化期',
+        days: [16, 25],
+        description: '重点攻克易错题'
+    },
+    // 第三阶段：冲刺复习 (Day 26)
+    phase3: {
+        name: '冲刺复习期',
+        days: [26, 26],
+        description: '全量复习+查漏补缺'
+    }
+};
+
+// 每天题目分配（按知识点分布）
+const DAILY_SCHEDULE = {
+    // 第一阶段：基础刷题 - 新思想前15题 + 近代史前15题
+    1: { politics: [1,2,3,4,5,6,7,8,9,10], history: [1,2,3,4,5,6,7,8,9,10] },
+    2: { politics: [11,12,13,14,15,16,17,18,19,20], history: [11,12,13,14,15,16,17,18,19,20] },
+    3: { politics: [21,22,23,24,25,26,27,28,29,30], history: [21,22,23,24,25,26,27,28,29,30] },
+    4: { politics: [1,2,3,4,5,6,7,8,9,10], history: [1,2,3,4,5,6,7,8,9,10] },
+    5: { politics: [11,12,13,14,15,16,17,18,19,20], history: [11,12,13,14,15,16,17,18,19,20] },
+    6: { politics: [21,22,23,24,25,26,27,28,29,30], history: [21,22,23,24,25,26,27,28,29,30] },
+    7: { politics: [1,2,3,4,5,11,12,13,14,15], history: [1,2,3,4,5,11,12,13,14,15] },
+    8: { politics: [6,7,8,9,10,16,17,18,19,20], history: [6,7,8,9,10,16,17,18,19,20] },
+    9: { politics: [21,22,23,24,25,26,27,28,29,30], history: [21,22,23,24,25,26,27,28,29,30] },
+    10: { politics: [1,3,5,7,9,11,13,15,17,19], history: [1,3,5,7,9,11,13,15,17,19] },
+    11: { politics: [2,4,6,8,10,12,14,16,18,20], history: [2,4,6,8,10,12,14,16,18,20] },
+    12: { politics: [21,22,23,24,25,26,27,28,29,30], history: [21,22,23,24,25,26,27,28,29,30] },
+    13: { politics: [1,2,3,4,5,21,22,23,24,25], history: [1,2,3,4,5,21,22,23,24,25] },
+    14: { politics: [6,7,8,9,10,26,27,28,29,30], history: [6,7,8,9,10,26,27,28,29,30] },
+    15: { politics: [11,12,13,14,15,16,17,18,19,20], history: [11,12,13,14,15,16,17,18,19,20] },
+    
+    // 第二阶段：真题强化 (Day 16-25) - 混合抽题
+    16: { type: 'mixed', count: 20 },
+    17: { type: 'mixed', count: 20 },
+    18: { type: 'mixed', count: 20 },
+    19: { type: 'mixed', count: 20 },
+    20: { type: 'mixed', count: 20 },
+    21: { type: 'mixed', count: 20 },
+    22: { type: 'mixed', count: 20 },
+    23: { type: 'mixed', count: 20 },
+    24: { type: 'mixed', count: 20 },
+    25: { type: 'mixed', count: 20 },
+    
+    // 第三阶段：冲刺复习 (Day 26) - 全部30题
+    26: { politics: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], history: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] }
+};
+
 // ==================== 完整题库（2科各30题）====================
 const fullQuestionBank = [
     // 15040 新思想 30题
@@ -551,6 +638,33 @@ function updateQuestionProgress(qid, isCorrect) {
     return p;
 }
 
+// ==================== 倒计时和计划 ====================
+function getDaysUntilExam() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const examDate = new Date(EXAM_DATE);
+    examDate.setHours(0, 0, 0, 0);
+    const diffTime = examDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
+
+function getStudyDay() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDate = new Date(START_DATE);
+    startDate.setHours(0, 0, 0, 0);
+    const diffTime = today - startDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return Math.max(1, Math.min(26, diffDays)); // 限制在1-26天
+}
+
+function getCurrentPhase(studyDay) {
+    if (studyDay <= 15) return STUDY_PLAN.phase1;
+    if (studyDay <= 25) return STUDY_PLAN.phase2;
+    return STUDY_PLAN.phase3;
+}
+
 // ==================== 题目加载 ====================
 function getTodayString() {
     const d = new Date();
@@ -558,14 +672,31 @@ function getTodayString() {
 }
 
 function loadDailyQuestions(subject) {
+    const studyDay = getStudyDay();
     const today = getTodayString();
-    const storageKey = `daily_${subject}_${today}`;
+    const storageKey = `daily_${subject}_${today}_day${studyDay}`;
     let ids = localStorage.getItem(storageKey);
     
     if (!ids) {
-        // 每日练习：全部30题
-        const subjectQs = fullQuestionBank.filter(q => q.subject === subject);
-        const picked = subjectQs.map(q => q.id);
+        const schedule = DAILY_SCHEDULE[studyDay];
+        let picked = [];
+        
+        if (schedule && schedule.type === 'mixed') {
+            // 第二阶段：混合抽题
+            const subjectQs = fullQuestionBank.filter(q => q.subject === subject);
+            const shuffled = [...subjectQs].sort(() => Math.random() - 0.5);
+            picked = shuffled.slice(0, schedule.count).map(q => q.id);
+        } else if (schedule && schedule[subject === '15040' ? 'politics' : 'history']) {
+            // 第一阶段或第三阶段：按计划取题
+            const indices = schedule[subject === '15040' ? 'politics' : 'history'];
+            const subjectQs = fullQuestionBank.filter(q => q.subject === subject);
+            picked = indices.map(idx => subjectQs[idx - 1]?.id).filter(id => id);
+        } else {
+            // 默认取全部
+            const subjectQs = fullQuestionBank.filter(q => q.subject === subject);
+            picked = subjectQs.map(q => q.id);
+        }
+        
         localStorage.setItem(storageKey, JSON.stringify(picked));
         return picked;
     }
@@ -780,8 +911,9 @@ function setupEvents() {
     // 刷新今日题目
     document.getElementById('refreshDailyBtn').addEventListener('click', () => {
         if (currentMode !== 'daily') return;
+        const studyDay = getStudyDay();
         const today = getTodayString();
-        localStorage.removeItem(`daily_${currentSubject}_${today}`);
+        localStorage.removeItem(`daily_${currentSubject}_${today}_day${studyDay}`);
         updateCurrentQuestionList();
         renderQuestion();
     });
@@ -833,8 +965,31 @@ function createConfetti() {
     }
 }
 
+// ==================== 更新倒计时和计划 ====================
+function updateCountdown() {
+    const daysLeft = getDaysUntilExam();
+    const studyDay = getStudyDay();
+    const phase = getCurrentPhase(studyDay);
+    
+    // 更新倒计时
+    document.getElementById('countdownDisplay').innerText = `${daysLeft}天`;
+    
+    // 更新学习天数
+    document.getElementById('studyDayDisplay').innerText = `第${studyDay}天`;
+    
+    // 更新阶段
+    document.getElementById('phaseDisplay').innerText = phase.name;
+    document.getElementById('phaseDesc').innerText = phase.description;
+    
+    // 更新进度条
+    const progress = (studyDay / 26) * 100;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+    document.getElementById('progressText').innerText = `${Math.round(progress)}%`;
+}
+
 // ==================== 初始化 ====================
 function init() {
+    updateCountdown();
     updateCurrentQuestionList();
     renderQuestion();
     updateStats();
